@@ -1,4 +1,10 @@
 body {
   padding: 10px;
-  font-family: sans-serif;
+  font-family: sans-serif; 
+}
+
+#beaconcontainer {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 100px;
 }
