@@ -82,23 +82,3 @@ function average(array) {
   return parseFloat((sum / array.length).toFixed(1));
 }
 
-// setTimeout(() => { // Stop scanning after x seconds (for testing)
-//   scanner.stopScan();
-//   console.log("stopped scanning.");
-//   process.exit();
-// }, 15000);
-
-// Example beacon for reference
-// {
-//   "id": "40b4d11898279091563f54815a7f8704",
-//   "address": "",
-//   "localName": "iPhone (3)",
-//   "txPowerLevel": null,
-//   "rssi": -37,
-//   "beaconType": "iBeacon",
-//   "iBeacon": {
-//     "uuid": "6B9FFDFF-5A95-4379-9833-08A0FD76D615",
-//     "major": 100,
-//     "minor": 6,
-//     "txPower": -59
-//   }
