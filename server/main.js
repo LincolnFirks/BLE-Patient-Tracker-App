@@ -1,9 +1,10 @@
 import { Meteor } from 'meteor/meteor';
-import { TasksCollection } from '/imports/api/TasksCollection';
+import { beacon1Collection, beacon2Collection } from '/imports/api/TasksCollection';
+
 
 
 
 Meteor.publish('tasks', () => { 
-  return TasksCollection.find();
+  return [beacon1Collection.find(), beacon2Collection.find()];
 
 });
