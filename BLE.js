@@ -28,6 +28,50 @@ const beacon2 = {
   collection: "beacon2"
 }
 
+const beacon3 = {
+  identifiers: {
+    uuid: '6B9FFDFF-5A95-4379-9833-08A0FD76D617',
+    major: 100,
+    minor: 6
+  },
+  status: false,
+  distanceReadings: [], // collection of last 5 readings
+  collection: "beacon3"
+}
+
+const beacon4 = {
+  identifiers: {
+    uuid: '6B9FFDFF-5A95-4379-9833-08A0FD76D618',
+    major: 100,
+    minor: 6
+  },
+  status: false,
+  distanceReadings: [], // collection of last 5 readings
+  collection: "beacon4"
+}
+
+const beacon5 = {
+  identifiers: {
+    uuid: '6B9FFDFF-5A95-4379-9833-08A0FD76D619',
+    major: 100,
+    minor: 6
+  },
+  status: false,
+  distanceReadings: [], // collection of last 5 readings
+  collection: "beacon5"
+}
+
+const beacon6 = {
+  identifiers: {
+    uuid: '6B9FFDFF-5A95-4379-9833-08A0FD76D610',
+    major: 100,
+    minor: 6
+  },
+  status: false,
+  distanceReadings: [], // collection of last 5 readings
+  collection: "beacon6"
+}
+
 // Handle beacon advertisements
 scanner.onadvertisement = (ad) => {
   HandleAd(ad);
@@ -53,6 +97,10 @@ function HandleAd(ad) {
   
   if (device.identifiers.uuid === beacon1.identifiers.uuid) HandleUpdate(device, beacon1);
   if (device.identifiers.uuid === beacon2.identifiers.uuid) HandleUpdate(device, beacon2);
+  if (device.identifiers.uuid === beacon3.identifiers.uuid) HandleUpdate(device, beacon3);
+  if (device.identifiers.uuid === beacon4.identifiers.uuid) HandleUpdate(device, beacon4);
+  if (device.identifiers.uuid === beacon5.identifiers.uuid) HandleUpdate(device, beacon5);
+  if (device.identifiers.uuid === beacon6.identifiers.uuid) HandleUpdate(device, beacon6);
   
 };
 
@@ -97,23 +145,3 @@ function average(array) {
   return parseFloat((sum / array.length).toFixed(1));
 }
 
-// setTimeout(() => { // Stop scanning after x seconds (for testing)
-//   scanner.stopScan();
-//   console.log("stopped scanning.");
-//   process.exit();
-// }, 15000);
-
-// Example beacon for reference
-// {
-//   "id": "40b4d11898279091563f54815a7f8704",
-//   "address": "",
-//   "localName": "iPhone (3)",
-//   "txPowerLevel": null,
-//   "rssi": -37,
-//   "beaconType": "iBeacon",
-//   "iBeacon": {
-//     "uuid": "6B9FFDFF-5A95-4379-9833-08A0FD76D615",
-//     "major": 100,
-//     "minor": 6,
-//     "txPower": -59
-//   }
