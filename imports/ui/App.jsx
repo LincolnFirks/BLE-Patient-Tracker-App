@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
-import { beacon1Collection, beacon2Collection } from '/imports/api/TasksCollection';
+import { beacon1Collection, beacon2Collection,
+        beacon3Collection, beacon4Collection,
+        beacon5Collection, beacon6Collection } from '/imports/api/TasksCollection';
 
 
 
@@ -46,17 +48,26 @@ function BeaconTable({ entries, beaconName }) {
 export const App = () => {
   const beacon1Data = useTracker(() => beacon1Collection.find().fetch());
   const beacon2Data = useTracker(() => beacon2Collection.find().fetch());
+  const beacon3Data = useTracker(() => beacon3Collection.find().fetch());
+  const beacon4Data = useTracker(() => beacon4Collection.find().fetch());
+  const beacon5Data = useTracker(() => beacon5Collection.find().fetch());
+  const beacon6Data = useTracker(() => beacon6Collection.find().fetch());
   beacon1Data.reverse();
   beacon2Data.reverse();
+  beacon3Data.reverse();
+  beacon4Data.reverse();
+  beacon5Data.reverse();
+  beacon6Data.reverse();
   
   return (
     <div className="app">
       <BeaconTable entries={ beacon1Data } beaconName = "beacon1"/>
       <BeaconTable entries={ beacon2Data } beaconName = "beacon2"/>
-      <table></table>
-      <table></table>
-      <table></table>
-      <table></table>
+      <BeaconTable entries={ beacon3Data } beaconName = "beacon3"/>
+      <BeaconTable entries={ beacon4Data } beaconName = "beacon4"/>
+      <BeaconTable entries={ beacon5Data } beaconName = "beacon5"/>
+      <BeaconTable entries={ beacon6Data } beaconName = "beacon6"/>
+      
     </div>
     
   )
