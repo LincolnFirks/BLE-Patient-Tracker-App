@@ -7,5 +7,10 @@ Meteor.startup(() => {
   Meteor.subscribe('tasks');
   const container = document.getElementById('react-target');
   const root = createRoot(container);
-  root.render(<App />);
+  
+  try {
+    root.render(<App />);
+  } catch (error) {
+    console.error('Error rendering App:', error);
+  }
 });

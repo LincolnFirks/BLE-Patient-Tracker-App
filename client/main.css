@@ -1,10 +1,39 @@
 body {
   padding: 10px;
   font-family: sans-serif; 
+  
 }
 
-#beaconcontainer {
+.app {
   display:grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  gap: 100px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 50vh;
+  gap: 10px;
+  
+  height: 100vh;
+  
+}
+
+.table {
+  border-collapse: collapse;
+  display: block;
+  border: 1px solid #ddd;
+  overflow:hidden;
+  width: 100%;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  width: 50%;
+}
+
+.table th {
+  background-color: #f2f2f2;
+}
+
+.table td {
+  white-space: nowrap;  
+  width: auto;
 }
