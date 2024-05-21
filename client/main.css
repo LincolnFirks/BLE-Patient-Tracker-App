@@ -1,7 +1,8 @@
 body {
-  padding: 10px;
+  padding: 0px 5px 5px 5px;
+  margin: 0px 5px 5px 5px;
   font-family: sans-serif; 
-  
+  background-color: rgb(212, 234, 250);
 }
 
 .app {
@@ -9,31 +10,142 @@ body {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto 50vh;
   gap: 10px;
-  
   height: 100vh;
+}
+
+.welcome-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.welcome-text {
+  text-align: center;
+}
+
+.main-nav-bar {
+  width: 200px;
+  padding-top: 30px;
+  background-color: #5e5e5e;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   
 }
 
-.table {
-  border-collapse: collapse;
+.main-nav-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.main-nav-item {
+  margin-bottom: 10px;
+  text-align: center;
+  padding: 20px 0px 20px 0px;
+  background-color: gray;
+  width: 80%;
+  
+}
+
+.main-nav-item a {
   display: block;
-  border: 1px solid #ddd;
-  overflow:hidden;
+  color: black;
+  text-align: center;
+  
+  text-decoration: none;
+}
+
+.main-nav-item a:hover {
+  color: rgb(202, 202, 202);
+}
+.beacon-overview {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.all-beacon-data, .solo-beacon-data {
+  margin-left: 200px;
+  flex-grow: 1;
+  
+}
+
+.table, .solo-table {
+  border-collapse: collapse;
+  
+  border: 1px solid #000000;
+  overflow: hidden;
+  display: block;
+  background-color: #a3a3a3;
+}
+
+.solo-table {
+  width: 50%;
+  table-layout: auto;
+  display: block;
+  
+  
+}
+
+
+
+.table th, .table td, .solo-table th, .solo-table td {
+  border: 1px solid #000000;
+  padding: 8px;
+  text-align: left;
   width: 100%;
 }
 
-.table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-  width: 50%;
+.solo-table td {
+  
 }
 
-.table th {
+.table th, .solo-table th {
   background-color: #f2f2f2;
+  
 }
 
-.table td {
+.table td, .solo-table td {
   white-space: nowrap;  
-  width: auto;
+  
+}
+
+.nav-bar {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  overflow: hidden;
+  background-color: #a3a3a3;
+}
+
+.nav-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-item {
+  float: left;
+  background-color: gray;
+  border-radius: 12px;
+}
+
+.nav-item a {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.nav-item a:hover {
+  background-color: rgb(102, 102, 102);
+  color: black;
+  border-radius: 12px;
 }
