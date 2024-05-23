@@ -1,0 +1,25 @@
+{
+  "scanners": [
+    {
+      "location": "Receptionist",
+      "address": "25-74-bf-d6-7a-3c"
+    },
+    {
+      "location": "Oncology",
+      "address": "2a-7d-64-8a-cf-2d"
+    },
+    {
+      "location": "ICU",
+      "address": "fc-ae-b9-1a-38-fc"
+    },
+    {
+      "location": "Operating Room",
+      "address": "dc-54-d7-82-7b-f1"
+    },
+    {
+      "location": "Emergency Room",
+      "address": "0a-dc-3b-bf-67-de"
+    }
+  ]
+  
+}
