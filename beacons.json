@@ -1,0 +1,29 @@
+{
+  "beacons": [
+    {
+      "ID": "beacon1",
+      "address": "60-a1-83-80-36-b8",
+      "distanceReadings": []
+    },
+    {
+      "ID": "beacon2",
+      "address": "f3-cf-3c-d9-2c-bc",
+      "distanceReadings": []
+    },
+    {
+      "ID": "beacon3",
+      "address": "eb-ce-2d-6c-93-cd",
+      "distanceReadings": []
+    },
+    {
+      "ID": "beacon4",
+      "address": "d9-39-50-da-1d-13",
+      "distanceReadings": []
+    },
+    {
+      "ID": "beacon5",
+      "address": "35-9e-c5-bc-c5-cd",
+      "distanceReadings": []
+    }
+  ]
+}
