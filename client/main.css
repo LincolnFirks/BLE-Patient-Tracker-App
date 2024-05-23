@@ -88,7 +88,49 @@ body {
   width: 50%;
   table-layout: auto;
   display: block;
+  margin-top: 10px;
   
+}
+
+.assign-panel, .edit-panel {
+  width: 50%;
+  height: 70%;
+  background-color: rgb(213, 213, 213);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid black;
+}
+
+.assign-button {
+  height: 60px;
+  width: 150px;
+  margin-top: 10px;
+  font-size: 18px;
+  background-color: rgb(134, 201, 249);
+}
+
+.table-container {
+  margin-left: 200px;
+}
+
+.assign-container {
+  margin-top: 20px;
+}
+
+.assign-table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #000000;
+  table-layout: auto;
+  background-color: #a3a3a3;
+}
+
+.assign-table th, .assign-table td {
+  border: 1px solid #000000;
+  padding: 8px;
+  text-align: left;
   
 }
 
@@ -101,11 +143,8 @@ body {
   width: 100%;
 }
 
-.solo-table td {
-  
-}
 
-.table th, .solo-table th {
+.table th, .solo-table th, .assign-table th {
   background-color: #f2f2f2;
   
 }
