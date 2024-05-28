@@ -14,8 +14,7 @@ const client = new MongoClient(config.serverURL,  {
         }
     }
 );
-// takes device data, and database, collection to  insert into
-// is status true, device entered area. If false, it left.
+
 function update(beacon, time, location) {
   const myDB = client.db(config.database);
   const myColl = myDB.collection(beacon.ID);

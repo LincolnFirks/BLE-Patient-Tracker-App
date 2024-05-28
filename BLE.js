@@ -8,13 +8,8 @@ let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
 
 const scanner = new BeaconScanner();
 
-getMAC((err, macAddress) => {
-  if (err) {
-    console.error("Error retrieving MAC address:", err);
-  } else {
-    const localMac = macAddress;
-  }
-});
+const localMac = getMAC();
+
 
 
 // Handle beacon advertisements
