@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 
 
+
+
 function HomePage({}) {
   return (
     
@@ -40,8 +42,6 @@ function AssignBeacons({beaconData}) {
   const ShowEditPanel = (beaconID) => {
     setEditID(beaconID);
     ToggleEditPanel();
-    
-
   }
 
   return (
@@ -58,11 +58,13 @@ function AssignBeacons({beaconData}) {
         </thead>
         <tbody>
            {beaconData.map((beacon, index) => (
-              <tr key={index}>
-                <td onClick={() => {ShowEditPanel(beacon[0].beaconID)}}>{beacon[0].beaconID}</td>
-                <td>{beacon[0].address}</td>
-                <td>{beacon[0].location}</td>
-              </tr>
+              beacon.length > 0 ? 
+                <tr key={index}>
+                  <td onClick={() => {ShowEditPanel(beacon[0].beaconID)}}>{beacon[0].beaconID}</td>
+                  <td>{beacon[0].address}</td>
+                  <td>{beacon[0].location}</td>
+                </tr> : <tr key={index}></tr>
+              
             ))}
         </tbody>
       </table>
@@ -88,12 +90,31 @@ function AssignPanel() {
   )
 }
 
-function EditPanel({beaconID}) {
+function EditPanel({ beaconID }) {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    
+  };
+
   return (
     <div className='edit-panel'>
-      <p>Edit Beacon: {beaconID}</p>
+      <div className='inner-edit-panel'>
+        <p>Edit Beacon: {beaconID}</p>
+        <p>Change name to:</p>
+        <input 
+          type="text" 
+          value={inputValue} 
+          onChange={handleInputChange} 
+        />
+        <button onClick={handleSubmit}>Submit</button>
+      </div>
     </div>
-  )
+  );
 }
 
 function MainNav({}) {
@@ -186,12 +207,6 @@ export const App = () => {
   const beacon3Data = useTracker(() => beacon3Collection.find({}, {sort: { time: -1} }).fetch());
   const beacon4Data = useTracker(() => beacon4Collection.find({}, {sort: { time: -1} }).fetch());
   const beacon5Data = useTracker(() => beacon5Collection.find({}, {sort: { time: -1} }).fetch());
-  // const [beacon1ID, setBeacon1] = useState("beacon1");
-  // const [beacon2ID, setBeacon2] = useState("beacon2");
-  // const [beacon3ID, setBeacon3] = useState("beacon3");
-  // const [beacon4ID, setBeacon4] = useState("beacon4");
-  // const [beacon5ID, setBeacon5] = useState("beacon5");
-  // const [beacon6ID, setBeacon6] = useState("beacon6");
   const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
 
  
