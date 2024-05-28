@@ -20,6 +20,7 @@ function update(beacon, time, location) {
   const myColl = myDB.collection(beacon.ID);
   let entry = {
     beaconID: beacon.ID,
+    name: beacon.name,
     address: beacon.address,
     location,
     time

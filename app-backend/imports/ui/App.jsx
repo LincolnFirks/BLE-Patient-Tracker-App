@@ -21,7 +21,7 @@ function HomePage({}) {
 }
 
 function AssignBeacons({beaconData}) {
-  const header = ["BeaconID", "Beacon Address", "Location"];
+  const header = ["Beacon Name", "Beacon ID", "Beacon Address", "Location"];
   const [createPanel, setCreatePanel] = useState(false);
   const [editPanel, setEditPanel] = useState(false);
   const [editID, setID] = useState("");
@@ -32,13 +32,13 @@ function AssignBeacons({beaconData}) {
   const ToggleEditPanel = () => {
     setEditPanel(!editPanel);
   };
-  const setEditID = (beaconID) => {
-    setID(beaconID);
+  const setEditID = (name) => {
+    setID(name);
   }
 
 
-  const ShowEditPanel = (beaconID) => {
-    setEditID(beaconID);
+  const ShowEditPanel = (name) => {
+    setEditID(name);
     ToggleEditPanel();
   }
 
@@ -58,7 +58,8 @@ function AssignBeacons({beaconData}) {
            {beaconData.map((beacon, index) => (
               beacon.length > 0 ? 
                 <tr key={index}>
-                  <td onClick={() => {ShowEditPanel(beacon[0].beaconID)}}>{beacon[0].beaconID}</td>
+                  <td onClick={() => {ShowEditPanel(beacon[0].name)}}>{beacon[0].name}</td>
+                  <td>{beacon[0].beaconID}</td>
                   <td>{beacon[0].address}</td>
                   <td>{beacon[0].location}</td>
                 </tr> : <tr key={index}></tr>
@@ -70,7 +71,7 @@ function AssignBeacons({beaconData}) {
       <button className='assign-button' onClick={ToggleCreatePanel}>Add a Beacon</button>
 
       {createPanel && <AssignPanel />}
-      {editPanel && <EditPanel beaconID={editID}/>}
+      {editPanel && <EditPanel name={editID}/>}
       
 
       
@@ -88,7 +89,7 @@ function AssignPanel() {
   )
 }
 
-function EditPanel({ beaconID }) {
+function EditPanel({ name }) {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event) => {
@@ -97,20 +98,22 @@ function EditPanel({ beaconID }) {
 
   const handleSubmit = () => {
     const postData = {
-      oldName: beaconID,
+      oldName: name,
       newName: inputValue
     }
     HTTP.post('http://localhost:3002/data', { data : postData }, (err, result) => {
       if (err) console.log(err)
-      else console.log('Success!: ', result);
+      else console.log('Success: ', result);
     })
+
+    
     
   };
 
   return (
     <div className='edit-panel'>
       <div className='inner-edit-panel'>
-        <p>Edit Beacon: {beaconID}</p>
+        <p>Edit Beacon: {name}</p>
         <p>Change name to:</p>
         <input 
           type="text" 
