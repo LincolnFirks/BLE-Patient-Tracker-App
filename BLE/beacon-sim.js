@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 // Route to handle POST requests to /data
 app.post('/data', (req, res) => {
-  console.log('Received data:', req.body);
+  console.log('Received datas:', req.body);
   // You can process the received data here
   res.send('Data received successfully');
 });
