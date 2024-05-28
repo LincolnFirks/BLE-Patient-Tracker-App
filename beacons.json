@@ -2,26 +2,31 @@
   "beacons": [
     {
       "ID": "beacon1",
+      "name": "John",
       "address": "60-a1-83-80-36-b8",
       "distanceReadings": []
     },
     {
       "ID": "beacon2",
+      "name": "Jane",
       "address": "f3-cf-3c-d9-2c-bc",
       "distanceReadings": []
     },
     {
       "ID": "beacon3",
+      "name": "Joe",
       "address": "eb-ce-2d-6c-93-cd",
       "distanceReadings": []
     },
     {
       "ID": "beacon4",
+      "name": "Steve",
       "address": "d9-39-50-da-1d-13",
       "distanceReadings": []
     },
     {
       "ID": "beacon5",
+      "name": "Sarah",
       "address": "35-9e-c5-bc-c5-cd",
       "distanceReadings": []
     }
