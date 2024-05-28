@@ -5,7 +5,7 @@ let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
 let scannerData = JSON.parse(fs.readFileSync("scanners.json", "utf-8"));
 
 function randomDelay() {
-  return Math.floor(Math.random() * 50000);
+  return Math.floor(Math.random() * 60000);
 }
 
 // Loop with random delays
