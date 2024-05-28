@@ -4,9 +4,7 @@ import { beacon1Collection, beacon2Collection,
         beacon3Collection, beacon4Collection,
         beacon5Collection, beacon6Collection } from '/imports/api/TasksCollection';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
-
-
+import { HTTP } from 'meteor/http';
 
 
 function HomePage({}) {
@@ -98,6 +96,14 @@ function EditPanel({ beaconID }) {
   };
 
   const handleSubmit = () => {
+    const postData = {
+      oldName: beaconID,
+      newName: inputValue
+    }
+    HTTP.post('http://localhost:3002/data', { data : postData }, (err, result) => {
+      if (err) console.log(err)
+      else console.log('Success!: ', result);
+    })
     
   };
 
