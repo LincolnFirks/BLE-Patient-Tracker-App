@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
-import { beacon1Collection, beacon2Collection,
-        beacon3Collection, beacon4Collection,
-        beacon5Collection, beacon6Collection } from '/imports/api/TasksCollection';
+import { beacon1Collection,beacon2Collection,beacon3Collection,beacon4Collection,beacon5Collection, beaconNameCollection } from '/imports/api/TasksCollection';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { HTTP } from 'meteor/http';
+
+
 
 
 function HomePage({}) {
@@ -21,7 +20,7 @@ function HomePage({}) {
 }
 
 function AssignBeacons({beaconData}) {
-  const header = ["Beacon Name", "Beacon ID", "Beacon Address", "Location"];
+  const header = ["Patient Name", "Beacon ID", "Beacon Address", "Location"];
   const [createPanel, setCreatePanel] = useState(false);
   const [editPanel, setEditPanel] = useState(false);
   const [editID, setID] = useState("");
@@ -97,17 +96,7 @@ function EditPanel({ name }) {
   };
 
   const handleSubmit = () => {
-    const postData = {
-      oldName: name,
-      newName: inputValue
-    }
-    HTTP.post('http://localhost:3002/data', { data : postData }, (err, result) => {
-      if (err) console.log(err)
-      else console.log('Success: ', result);
-    })
-
-    
-    
+    Meteor.call('PostName', name, inputValue);
   };
 
   return (
@@ -133,6 +122,7 @@ function MainNav({}) {
         <li className='main-nav-item'><Link to="/">Home</Link></li>
         <li className='main-nav-item'><Link to="/beacons">Patient Overview</Link></li>
         <li className='main-nav-item'><Link to="/assign-beacons">Assign Beacons</Link></li>
+        <li className='main-nav-item'><Link to="/beacon-history">Beacon History</Link></li>
         
       </ul>
     </nav>
@@ -210,6 +200,35 @@ function SoloBeaconTable({ entries, beaconName }) {
   )
 }
 
+function BeaconHistory({beaconHistory, nameHistory}) {
+  const header = ["Patient", "Last Update"]
+  return (
+    <div className='solo-beacon-data'>
+      <MainNav/>
+      <table className='solo-table'>
+        <thead>
+          <tr>
+            {header.map((item, index) => (<td key={index}>{item}</td>))}
+          </tr>
+        </thead>
+        <tbody>
+          {console.log(nameHistory)}
+          {nameHistory.map((doc, index) => (
+
+            <tr key={index}>
+              <td>{doc.name}</td>
+              <td>{"time"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) 
+  
+}
+
+
+
 export const App = () => {
   const beacon1Data = useTracker(() => beacon1Collection.find({}, {sort: { time: -1} }).fetch());
   const beacon2Data = useTracker(() => beacon2Collection.find({}, {sort: { time: -1} }).fetch());
@@ -217,6 +236,10 @@ export const App = () => {
   const beacon4Data = useTracker(() => beacon4Collection.find({}, {sort: { time: -1} }).fetch());
   const beacon5Data = useTracker(() => beacon5Collection.find({}, {sort: { time: -1} }).fetch());
   const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
+  const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
+
+ 
+  
 
  
 
@@ -269,6 +292,8 @@ export const App = () => {
           <Route path="/" element={ <HomePage/> } /> 
           <Route path="/assign-beacons" element={ 
             <AssignBeacons beaconData={beaconArray}/> } /> 
+
+          <Route path="/beacon-history" element={ <BeaconHistory beaconHistory={beaconArray} nameHistory={beaconNames}/> } /> 
 
           
         </Routes>

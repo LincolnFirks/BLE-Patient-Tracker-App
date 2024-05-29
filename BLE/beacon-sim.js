@@ -1,4 +1,4 @@
-const { update, client } = require("./update");
+const { update, updateNameList, client } = require("./update");
 const fs = require("fs");
 const cors = require('cors');
 const express = require('express');
@@ -31,7 +31,7 @@ app.listen(PORT, () => {
 
 
 function randomDelay() {
-  return Math.floor(Math.random() * 10000);
+  return Math.floor(Math.random() * 100000);
 }
 
 function changeID(oldName, newName) {
