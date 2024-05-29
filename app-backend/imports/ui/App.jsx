@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import { beacon1Collection,beacon2Collection,beacon3Collection,beacon4Collection,beacon5Collection, beaconNameCollection } from '/imports/api/TasksCollection';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { formatDateAndTime } from '/client/main';
 
 
 
@@ -141,11 +143,9 @@ function BeaconTitle({ beaconName }) {
 }
 
 function BeaconEntry( { entry } ) {
-  let time = entry.time;
+  let time = formatDateAndTime(entry.time);
   let location = entry.location;
-  const formattedDate = time.toLocaleDateString('en-US');
-  const formattedTime = time.toLocaleTimeString('en-US');
-  time = formattedDate + " " + formattedTime;
+  
   return (
     <tr>
       <td>{location}</td>
@@ -200,7 +200,7 @@ function SoloBeaconTable({ entries, beaconName }) {
   )
 }
 
-function BeaconHistory({beaconHistory, nameHistory}) {
+function BeaconHistory({ nameHistory}) {
   const header = ["Patient", "Last Update"]
   return (
     <div className='solo-beacon-data'>
@@ -212,11 +212,11 @@ function BeaconHistory({beaconHistory, nameHistory}) {
           </tr>
         </thead>
         <tbody>
-          {console.log(nameHistory)}
+          
           {nameHistory.map((doc, index) => (
 
             <tr key={index}>
-              <td>{doc.name}</td>
+              <td><Link to={`/history/${doc.name}`}>{doc.name}</Link></td>
               <td>{"time"}</td>
             </tr>
           ))}
@@ -225,6 +225,40 @@ function BeaconHistory({beaconHistory, nameHistory}) {
     </div>
   ) 
   
+}
+
+function NameHistory({beaconData}) {
+  const { name } = useParams();
+  return (
+    <div>
+      <MainNav/>
+      <div className='solo-beacon-data'>
+        <p>{`${name}'s History`}</p>
+
+        <table className='solo-table'>
+          <thead>
+            <tr>
+              <td>Location</td>
+              <td>Time</td>
+            </tr>
+          </thead>
+          <tbody>
+            {beaconData.map((collection, index) =>
+              collection.filter(doc => doc.name === name)
+                .map(doc => (
+                  <tr key={doc._id}> 
+                    <td>{doc.location}</td>
+                    <td>{formatDateAndTime(doc.time)}</td>
+                  </tr>
+                ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    
+  );  
 }
 
 
@@ -294,6 +328,7 @@ export const App = () => {
             <AssignBeacons beaconData={beaconArray}/> } /> 
 
           <Route path="/beacon-history" element={ <BeaconHistory beaconHistory={beaconArray} nameHistory={beaconNames}/> } /> 
+          <Route path="/history/:name" element={  <NameHistory beaconData={beaconArray}/>} /> 
 
           
         </Routes>

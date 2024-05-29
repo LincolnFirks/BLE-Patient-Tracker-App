@@ -14,3 +14,9 @@ Meteor.startup(() => {
     console.error('Error rendering App:', error);
   }
 });
+
+export const formatDateAndTime = (date) => {
+  const formattedDate = date.toLocaleDateString('en-US');
+  const formattedTime = date.toLocaleTimeString('en-US');
+  return `${formattedDate} ${formattedTime}`;
+};
