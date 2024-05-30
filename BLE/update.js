@@ -27,7 +27,6 @@ function update(beacon, time, location) {
   }
   myColl.insertOne(entry);
   console.log(`A document was inserted`);
-  console.log(entry)
   updateNameList(beacon.name, myDB, time)
 
 }
@@ -40,7 +39,7 @@ async function updateNameList(beaconName, db, time) {
       const result = await nameCollection.insertOne({ name: beaconName, time });
       console.log("New name inserted:", result.insertedId);
     } else {
-      console.log("Name already exists:", checkName);
+      const result = await nameCollection.updateOne({_id: checkName._id},{$set: {time}});
     }
   } catch (error) {
     console.error("Error inserting name:", error);

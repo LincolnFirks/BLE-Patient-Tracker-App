@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { beacon1Collection,beacon2Collection,beacon3Collection,beacon4Collection,beacon5Collection, beaconNameCollection } from '/imports/api/TasksCollection';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import {
+  beacon1Collection,
+  beacon2Collection,
+  beacon3Collection,
+  beacon4Collection,
+  beacon5Collection,
+  beaconNameCollection,
+} from '/imports/api/TasksCollection';
 import { formatDateAndTime } from '/client/main';
 
 
@@ -71,8 +77,8 @@ function AssignBeacons({beaconData}) {
 
       <button className='assign-button' onClick={ToggleCreatePanel}>Add a Beacon</button>
 
-      {createPanel && <AssignPanel />}
-      {editPanel && <EditPanel name={editID}/>}
+      {createPanel && <AssignPanel onToggleCreatePanel={ToggleCreatePanel}/>}
+      {editPanel && <EditPanel name={editID} onToggleEditPanel={ToggleEditPanel}/>}
       
 
       
@@ -82,27 +88,61 @@ function AssignBeacons({beaconData}) {
   );
 }
 
-function AssignPanel() {
+function AssignPanel({onToggleCreatePanel}) {
+  const [IDvalue, setIDValue] = useState('');
+  const [AdressValue, setAdressValue] = useState('');
+
+  const HandleIDChange = (event) => {
+    setIDValue(event.target.value);
+  };
+
+  const HandleAdressChange = (event) => {
+    setAdressValue(event.target.value);
+  };
+
+  const HandleSubmit = () => {
+    Meteor.call('AddBeacon', IDvalue, AdressValue);
+    onToggleCreatePanel();
+  }
+
   return (
     <div className='assign-panel'>
-      <p>Assign Panel</p>
+      <button className='x-button' onClick={onToggleCreatePanel} >X</button>
+      <p>Create Beacon:</p>
+      <p>Beacon ID:</p>
+      <input 
+          type="text" 
+          value={IDvalue} 
+          onChange={HandleIDChange} 
+        />
+      <p>Beacon Adress:</p>
+      <input 
+          type="text" 
+          value={AdressValue} 
+          onChange={HandleAdressChange} 
+        />
+      <button className='submit-button' onClick={HandleSubmit}>Submit</button>
     </div>
   )
 }
 
-function EditPanel({ name }) {
+function EditPanel({ name, onToggleEditPanel }) {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
+    
   };
 
   const handleSubmit = () => {
     Meteor.call('PostName', name, inputValue);
+    onToggleEditPanel();
+    
   };
 
   return (
     <div className='edit-panel'>
+      <button className='x-button' onClick={onToggleEditPanel}>X</button>
       <div className='inner-edit-panel'>
         <p>Edit Beacon: {name}</p>
         <p>Change name to:</p>
@@ -111,8 +151,9 @@ function EditPanel({ name }) {
           value={inputValue} 
           onChange={handleInputChange} 
         />
-        <button onClick={handleSubmit}>Submit</button>
+        
       </div>
+      <button className='submit-button' onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
@@ -208,7 +249,7 @@ function BeaconHistory({ nameHistory}) {
       <table className='solo-table'>
         <thead>
           <tr>
-            {header.map((item, index) => (<td key={index}>{item}</td>))}
+            {header.map((item, index) => (<th key={index}>{item}</th>))}
           </tr>
         </thead>
         <tbody>
@@ -216,8 +257,8 @@ function BeaconHistory({ nameHistory}) {
           {nameHistory.map((doc, index) => (
 
             <tr key={index}>
-              <td><Link to={`/history/${doc.name}`}>{doc.name}</Link></td>
-              <td>{"time"}</td>
+              <td><Link to={`/history/${doc.name}`} className='name-link'>{doc.name}</Link></td>
+              <td>{formatDateAndTime(doc.time)}</td>
             </tr>
           ))}
         </tbody>
@@ -238,8 +279,8 @@ function NameHistory({beaconData}) {
         <table className='solo-table'>
           <thead>
             <tr>
-              <td>Location</td>
-              <td>Time</td>
+              <th>Location</th>
+              <th>Time</th>
             </tr>
           </thead>
           <tbody>

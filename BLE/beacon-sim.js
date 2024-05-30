@@ -14,12 +14,20 @@ app.use(cors());
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Route to handle POST requests to /data
-app.post('/data', (req, res) => {
+// Route to handle POST requests to /name-change
+app.post('/name-change', (req, res) => {
   console.log('Received data:', req.body);
   let oldName = req.body.oldName;
   let newName = req.body.newName;
   changeID(oldName, newName)
+  res.send('Data received successfully');
+});
+// Route to handle POST requests to /new-beacon
+app.post('/new-beacon', (req, res) => {
+  console.log('Received data:', req.body);
+  let ID = req.body.ID;
+  let Address = req.body.Address;
+  AddBeacon(ID, Address)
   res.send('Data received successfully');
 });
 
@@ -31,7 +39,7 @@ app.listen(PORT, () => {
 
 
 function randomDelay() {
-  return Math.floor(Math.random() * 100000);
+  return Math.floor(Math.random() * 50000);
 }
 
 function changeID(oldName, newName) {
@@ -41,6 +49,17 @@ function changeID(oldName, newName) {
       return;
     }});
     fs.writeFileSync("beacons.json",JSON.stringify(beaconData), "utf-8");
+}
+
+function AddBeacon(ID, address) {
+  newBeacon = {
+    ID,
+    name: "-", // placeholder
+    address,
+    "distanceReadings": []
+  }
+  beaconData.beacons.push(newBeacon)
+  fs.writeFileSync("beacons.json",JSON.stringify(beaconData), "utf-8");
 }
   
 

@@ -101,7 +101,47 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+
+
+
+.inner-edit-panel {
+  text-align: center;
+}
+
+.submit-button {
+  margin-top: 12px;
+  height: 40px;
+  width: 80px;
+  background-color: rgb(155, 227, 155);
+  border: solid black 1px;
+}
+
+.submit-button:hover {
+  background-color:  rgb(199, 244, 199);
+}
+
+.x-button {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  height: 20px;
+  background-color: red;
+  border: solid black 1px;
+}
+
+.x-button:hover {
+  background-color: rgb(255, 104, 104);
+}
+.name-link, .name-link:visited {
+  color: rgb(0, 85, 255);
+}
+
+
 
 .assign-button {
   height: 60px;
