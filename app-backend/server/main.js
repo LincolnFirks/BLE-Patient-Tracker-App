@@ -1,16 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
-import { beacon1Collection, beacon2Collection,
-        beacon3Collection, beacon4Collection,
-        beacon5Collection, beaconNameCollection } from '/imports/api/TasksCollection';
+import { beaconLocationCollection, beaconNameCollection } from '/imports/api/TasksCollection';
 
 
 
 
 Meteor.publish('tasks', () => { 
-  return [beacon1Collection.find(), beacon2Collection.find(),
-          beacon3Collection.find(), beacon4Collection.find(),
-          beacon5Collection.find(), beaconNameCollection.find()];
+  return [beaconLocationCollection.find(),beaconNameCollection.find()];
 
 });
 

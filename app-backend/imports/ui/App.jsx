@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import {
-  beacon1Collection,
-  beacon2Collection,
-  beacon3Collection,
-  beacon4Collection,
-  beacon5Collection,
-  beaconNameCollection,
-} from '/imports/api/TasksCollection';
+import { beaconNameCollection, beaconLocationCollection } from '/imports/api/TasksCollection';
 import { formatDateAndTime } from '/client/main';
 
 
@@ -62,16 +55,15 @@ function AssignBeacons({beaconData}) {
           </tr>
         </thead>
         <tbody>
-           {beaconData.map((beacon, index) => (
-              beacon.length > 0 ? 
-                <tr key={index}>
-                  <td onClick={() => {ShowEditPanel(beacon[0].name)}}>{beacon[0].name}</td>
-                  <td>{beacon[0].beaconID}</td>
-                  <td>{beacon[0].address}</td>
-                  <td>{beacon[0].location}</td>
-                </tr> : <tr key={index}></tr>
-              
-            ))}
+          {Array.from(beaconData).map(([key, beacon]) => (
+            beacon.length > 0 ? 
+              <tr key={key}>
+                <td onClick={() => {ShowEditPanel(beacon[0].name)}}>{beacon[0].name}</td>
+                <td>{key}</td>
+                <td>{beacon[0].address}</td>
+                <td>{beacon[0].location}</td>
+              </tr> : <tr key={key}></tr>
+          ))}
         </tbody>
       </table>
 
@@ -284,15 +276,14 @@ function NameHistory({beaconData}) {
             </tr>
           </thead>
           <tbody>
-            {beaconData.map((collection, index) =>
-              collection.filter(doc => doc.name === name)
-                .map(doc => (
-                  <tr key={doc._id}> 
+            {beaconData.filter(doc => doc.name === name)
+              .map(doc => (
+                <tr key={doc._id}> 
                     <td>{doc.location}</td>
                     <td>{formatDateAndTime(doc.time)}</td>
                   </tr>
-                ))
-            )}
+              ))}
+                  
           </tbody>
         </table>
       </div>
@@ -305,15 +296,30 @@ function NameHistory({beaconData}) {
 
 
 export const App = () => {
-  const beacon1Data = useTracker(() => beacon1Collection.find({}, {sort: { time: -1} }).fetch());
-  const beacon2Data = useTracker(() => beacon2Collection.find({}, {sort: { time: -1} }).fetch());
-  const beacon3Data = useTracker(() => beacon3Collection.find({}, {sort: { time: -1} }).fetch());
-  const beacon4Data = useTracker(() => beacon4Collection.find({}, {sort: { time: -1} }).fetch());
-  const beacon5Data = useTracker(() => beacon5Collection.find({}, {sort: { time: -1} }).fetch());
-  const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
-  const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
+  // const beacon1Data = useTracker(() => beacon1Collection.find({}, {sort: { time: -1} }).fetch());
+  // const beacon2Data = useTracker(() => beacon2Collection.find({}, {sort: { time: -1} }).fetch());
+  // const beacon3Data = useTracker(() => beacon3Collection.find({}, {sort: { time: -1} }).fetch());
+  // const beacon4Data = useTracker(() => beacon4Collection.find({}, {sort: { time: -1} }).fetch());
+  // const beacon5Data = useTracker(() => beacon5Collection.find({}, {sort: { time: -1} }).fetch());
+  // const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
+  // const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
 
- 
+  let currentBeacons = ['0001','0002','0003','0004','0005'];
+
+  const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
+  const beaconLocations = useTracker(() => beaconLocationCollection.find({}, {sort: { time: -1} }).fetch());
+
+  const beaconData = new Map();
+  currentBeacons.forEach(ID => {
+    beaconData.set(ID, []);
+  });
+
+  beaconLocations.forEach(entry => {
+    if (beaconData.has(entry.beaconID)) {
+        beaconData.get(entry.beaconID).push(entry);
+    } 
+  });
+  
   
 
  
@@ -326,11 +332,11 @@ export const App = () => {
       <div>
 
         <Routes>
-          <Route path="/beacon1" element={ <SoloBeaconTable entries={ beacon1Data } beaconName = "beacon1"/> } /> 
+          {/* <Route path="/beacon1" element={ <SoloBeaconTable entries={ beacon1Data } beaconName = "beacon1"/> } /> 
           <Route path="/beacon2" element={ <SoloBeaconTable entries={ beacon2Data } beaconName = "beacon2"/> } /> 
           <Route path="/beacon3" element={ <SoloBeaconTable entries={ beacon3Data } beaconName = "beacon3"/> } /> 
           <Route path="/beacon4" element={ <SoloBeaconTable entries={ beacon4Data } beaconName = "beacon4"/> } /> 
-          <Route path="/beacon5" element={ <SoloBeaconTable entries={ beacon5Data } beaconName = "beacon5"/> } /> 
+          <Route path="/beacon5" element={ <SoloBeaconTable entries={ beacon5Data } beaconName = "beacon5"/> } />  */}
           <Route path="/beacons" element={
             <div className='beacon-overview'>
 
@@ -353,11 +359,11 @@ export const App = () => {
               
                 <div className="app">
                   
-                  <BeaconTable entries={ beacon1Data } beaconName = "beacon1"/>
+                  {/* <BeaconTable entries={ beacon1Data } beaconName = "beacon1"/>
                   <BeaconTable entries={ beacon2Data } beaconName = "beacon2"/>
                   <BeaconTable entries={ beacon3Data } beaconName = "beacon3"/>
                   <BeaconTable entries={ beacon4Data } beaconName = "beacon4"/>
-                  <BeaconTable entries={ beacon5Data } beaconName = "beacon5"/>
+                  <BeaconTable entries={ beacon5Data } beaconName = "beacon5"/> */}
            
                 </div> 
               </div>
@@ -366,10 +372,10 @@ export const App = () => {
           } />
           <Route path="/" element={ <HomePage/> } /> 
           <Route path="/assign-beacons" element={ 
-            <AssignBeacons beaconData={beaconArray}/> } /> 
+            <AssignBeacons beaconData={beaconData}/> } /> 
 
-          <Route path="/beacon-history" element={ <BeaconHistory beaconHistory={beaconArray} nameHistory={beaconNames}/> } /> 
-          <Route path="/history/:name" element={  <NameHistory beaconData={beaconArray}/>} /> 
+          <Route path="/beacon-history" element={ <BeaconHistory nameHistory={beaconNames}/> } /> 
+          <Route path="/history/:name" element={  <NameHistory beaconData={beaconLocations}/>} /> 
 
           
         </Routes>

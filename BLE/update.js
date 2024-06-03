@@ -17,7 +17,7 @@ const client = new MongoClient(config.serverURL,  {
 
 function update(beacon, time, location) {
   const myDB = client.db(config.database);
-  const myColl = myDB.collection(beacon.ID);
+  const myColl = myDB.collection(config.beaconLocationCollection);
   let entry = {
     beaconID: beacon.ID,
     name: beacon.name,
@@ -33,7 +33,7 @@ function update(beacon, time, location) {
 
 async function updateNameList(beaconName, db, time) {
   try {
-    const nameCollection = db.collection("BeaconNames");
+    const nameCollection = db.collection(config.beaconNameCollection);
     const checkName = await nameCollection.findOne({ name: beaconName });
     if (!checkName) {
       const result = await nameCollection.insertOne({ name: beaconName, time });
