@@ -1,10 +1,16 @@
-const { update, updateNameList, client } = require("./update");
+const { update , client } = require("./update");
+const { AddBeacon, RemoveBeacon, startup } = require("./modify-beacons")
 const fs = require("fs");
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
+let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
 let scannerData = JSON.parse(fs.readFileSync("scanners.json", "utf-8"));
+let currentBeacons = (JSON.parse(fs.readFileSync("current-beacons.json", "utf-8"))).beacons;
+
+startup(client, config, currentBeacons);
+
 
 const app = express();
 const PORT = 3002;
@@ -27,10 +33,16 @@ app.post('/new-beacon', (req, res) => {
   console.log('Received data:', req.body);
   let ID = req.body.ID;
   let Address = req.body.Address;
-  AddBeacon(ID, Address)
+  AddBeacon(ID, Address, beaconData, client, config)
   res.send('Data received successfully');
 });
 
+app.post('/remove-beacon', (req, res) => {
+  console.log('Received data:', req.body);
+  let ID = req.body.ID;
+  RemoveBeacon(ID, beaconData, client, config);
+  res.send('Data received successfully');
+});
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
@@ -51,16 +63,7 @@ function changeID(oldName, newName) {
     fs.writeFileSync("beacons.json",JSON.stringify(beaconData), "utf-8");
 }
 
-function AddBeacon(ID, address) {
-  newBeacon = {
-    ID,
-    name: "-", // placeholder
-    address,
-    "distanceReadings": []
-  }
-  beaconData.beacons.push(newBeacon)
-  fs.writeFileSync("beacons.json",JSON.stringify(beaconData), "utf-8");
-}
+
   
 
 

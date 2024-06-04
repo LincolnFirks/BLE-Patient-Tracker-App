@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { beaconNameCollection, beaconLocationCollection } from '/imports/api/TasksCollection';
+import { beaconNameCollection, beaconLocationCollection, currentBeaconCollection } from '/imports/api/TasksCollection';
 import { formatDateAndTime } from '/client/main';
 
 
@@ -24,6 +24,7 @@ function AssignBeacons({beaconData}) {
   const header = ["Patient Name", "Beacon ID", "Beacon Address", "Location"];
   const [createPanel, setCreatePanel] = useState(false);
   const [editPanel, setEditPanel] = useState(false);
+  const [editName, setName] = useState("");
   const [editID, setID] = useState("");
 
   const ToggleCreatePanel = () => {
@@ -32,13 +33,17 @@ function AssignBeacons({beaconData}) {
   const ToggleEditPanel = () => {
     setEditPanel(!editPanel);
   };
-  const setEditID = (name) => {
-    setID(name);
+  const setEditName = (name) => {
+    setName(name);
+  }
+  const setEditID = (ID) => {
+    setID(ID);
   }
 
 
-  const ShowEditPanel = (name) => {
-    setEditID(name);
+  const ShowEditPanel = (name, ID) => {
+    setEditName(name);
+    setEditID(ID);
     ToggleEditPanel();
   }
 
@@ -58,7 +63,7 @@ function AssignBeacons({beaconData}) {
           {Array.from(beaconData).map(([key, beacon]) => (
             beacon.length > 0 ? 
               <tr key={key}>
-                <td onClick={() => {ShowEditPanel(beacon[0].name)}}>{beacon[0].name}</td>
+                <td onClick={() => {ShowEditPanel(beacon[0].name, key)}}>{beacon[0].name}</td>
                 <td>{key}</td>
                 <td>{beacon[0].address}</td>
                 <td>{beacon[0].location}</td>
@@ -70,7 +75,7 @@ function AssignBeacons({beaconData}) {
       <button className='assign-button' onClick={ToggleCreatePanel}>Add a Beacon</button>
 
       {createPanel && <AssignPanel onToggleCreatePanel={ToggleCreatePanel}/>}
-      {editPanel && <EditPanel name={editID} onToggleEditPanel={ToggleEditPanel}/>}
+      {editPanel && <EditPanel name={editName} ID={editID} onToggleEditPanel={ToggleEditPanel}/>}
       
 
       
@@ -97,6 +102,8 @@ function AssignPanel({onToggleCreatePanel}) {
     onToggleCreatePanel();
   }
 
+  
+
   return (
     <div className='assign-panel'>
       <button className='x-button' onClick={onToggleCreatePanel} >X</button>
@@ -114,11 +121,12 @@ function AssignPanel({onToggleCreatePanel}) {
           onChange={HandleAdressChange} 
         />
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
+      
     </div>
   )
 }
 
-function EditPanel({ name, onToggleEditPanel }) {
+function EditPanel({ name, ID, onToggleEditPanel }) {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event) => {
@@ -131,6 +139,11 @@ function EditPanel({ name, onToggleEditPanel }) {
     onToggleEditPanel();
     
   };
+
+  const HandleRemove = (ID) => {
+    Meteor.call('RemoveBeacon', ID);
+    onToggleEditPanel();
+  }
 
   return (
     <div className='edit-panel'>
@@ -146,6 +159,7 @@ function EditPanel({ name, onToggleEditPanel }) {
         
       </div>
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
+      <button className='remove-button' onClick={() => HandleRemove(ID)} >Remove Beacon</button>
     </div>
   );
 }
@@ -304,21 +318,31 @@ export const App = () => {
   // const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
   // const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
 
-  let currentBeacons = ['0001','0002','0003','0004','0005'];
+  let currentBeacons = [];
+  let beaconData = [];
 
   const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
   const beaconLocations = useTracker(() => beaconLocationCollection.find({}, {sort: { time: -1} }).fetch());
+  const currentBeacons2 = useTracker(() => currentBeaconCollection.find({}).fetch());
+  
+  if (currentBeacons2.length > 0) {
+    currentBeacons = currentBeacons2[0].beacons
+  }
 
-  const beaconData = new Map();
-  currentBeacons.forEach(ID => {
+  
+  if (currentBeacons !== null) {
+    beaconData = new Map();
+    currentBeacons.forEach(ID => {
     beaconData.set(ID, []);
   });
 
-  beaconLocations.forEach(entry => {
-    if (beaconData.has(entry.beaconID)) {
-        beaconData.get(entry.beaconID).push(entry);
-    } 
-  });
+    beaconLocations.forEach(entry => {
+      if (beaconData.has(entry.beaconID)) {
+          beaconData.get(entry.beaconID).push(entry);
+      } 
+    });
+  }
+  
   
   
 

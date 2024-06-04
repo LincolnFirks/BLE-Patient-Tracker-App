@@ -125,17 +125,25 @@ body {
   background-color:  rgb(199, 244, 199);
 }
 
-.x-button {
+.x-button, .remove-button {
   position: absolute;
   left: 5px;
-  top: 5px;
+  
   height: 20px;
   background-color: red;
   border: solid black 1px;
 }
 
-.x-button:hover {
+.x-button:hover, .remove-button:hover {
   background-color: rgb(255, 104, 104);
+}
+
+.x-button {
+  top: 5px;
+}
+
+.remove-button {
+  bottom: 5px;
 }
 .name-link, .name-link:visited {
   color: rgb(0, 85, 255);
