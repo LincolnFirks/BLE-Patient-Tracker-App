@@ -140,6 +140,12 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
     
   };
 
+  const handleUnassign = () => {
+    Meteor.call('PostName', name, "-");
+    onToggleEditPanel();
+    
+  };
+
   const HandleRemove = (ID) => {
     Meteor.call('RemoveBeacon', ID);
     onToggleEditPanel();
@@ -160,6 +166,7 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
       </div>
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
       <button className='remove-button' onClick={() => HandleRemove(ID)} >Remove Beacon</button>
+      <button className='unassign-button' onClick={handleUnassign} >Unassign Patient</button>
     </div>
   );
 }

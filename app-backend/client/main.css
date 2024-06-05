@@ -145,6 +145,20 @@ body {
 .remove-button {
   bottom: 5px;
 }
+
+.unassign-button {
+  position: absolute;
+  right: 5px;
+  height: 40px;
+  background-color: rgb(139, 234, 245);
+  border: solid black 1px;
+  bottom: 5px;
+}
+
+.unassign-button:hover {
+  background-color: rgb(175, 241, 248);
+}
+
 .name-link, .name-link:visited {
   color: rgb(0, 85, 255);
 }
