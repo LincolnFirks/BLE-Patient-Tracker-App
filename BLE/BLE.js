@@ -3,8 +3,9 @@ const { update, client } = require("./update");
 const { parse } = require('path');
 const fs = require("fs");
 const getMAC = require("getmac").default;
+let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 
-let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
+
 
 const scanner = new BeaconScanner();
 
@@ -18,10 +19,15 @@ scanner.onadvertisement = (ad) => {
   HandleAd(ad, new Date());
 };
 
-function HandleAd(ad, time) {
+async function HandleAd(ad, time) {
   let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * 2);
   let distance = Math.pow(10, exponent) * 3.28; // convert to feet
   distance = parseFloat(distance.toFixed(1)); // this is est. feet from beacon
+  
+  const myDB = client.db(config.database);
+  const nameCollection = myDB.collection(config.beaconNameCollection);
+  
+  let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
 
   const matchingBeacon = beaconData.beacons.find(beacon => beacon.address === ad.address);
 
@@ -40,7 +46,7 @@ function HandleUpdate(beacon, distance, time) {
  
   if (average(beacon.distanceReadings) < 30) {
     update(beacon, time, localMac);
-    // if within 20 feet and current location is outside, send update 
+    // if within 30 feet and current location is outside, send update 
   } 
   beacon.distanceReadings = [];
 }

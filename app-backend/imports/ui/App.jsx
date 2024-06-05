@@ -135,18 +135,18 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
   };
 
   const handleSubmit = () => {
-    Meteor.call('PostName', name, inputValue);
+    Meteor.call('PostName', ID, inputValue);
     onToggleEditPanel();
     
   };
 
   const handleUnassign = () => {
-    Meteor.call('PostName', name, "-");
+    Meteor.call('PostName', ID, "-");
     onToggleEditPanel();
     
   };
 
-  const HandleRemove = (ID) => {
+  const HandleRemove = () => {
     Meteor.call('RemoveBeacon', ID);
     onToggleEditPanel();
   }
@@ -155,7 +155,7 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
     <div className='edit-panel'>
       <button className='x-button' onClick={onToggleEditPanel}>X</button>
       <div className='inner-edit-panel'>
-        <p>Edit Beacon: {name}</p>
+        <p>Edit Beacon: {name} {ID}</p>
         <p>Change name to:</p>
         <input 
           type="text" 
@@ -165,7 +165,7 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
         
       </div>
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
-      <button className='remove-button' onClick={() => HandleRemove(ID)} >Remove Beacon</button>
+      <button className='remove-button' onClick={HandleRemove} >Remove Beacon</button>
       <button className='unassign-button' onClick={handleUnassign} >Unassign Patient</button>
     </div>
   );
@@ -176,7 +176,7 @@ function MainNav({}) {
     <nav className='main-nav-bar'>
       <ul className='main-nav-list'>
         <li className='main-nav-item'><Link to="/">Home</Link></li>
-        <li className='main-nav-item'><Link to="/beacons">Patient Overview</Link></li>
+        
         <li className='main-nav-item'><Link to="/assign-beacons">Assign Beacons</Link></li>
         <li className='main-nav-item'><Link to="/beacon-history">Beacon History</Link></li>
         
@@ -187,72 +187,6 @@ function MainNav({}) {
 
 
 
-
-function BeaconTitle({ beaconName }) {
-  return (
-    <th colSpan="2">
-      {beaconName}
-    </th>
-  )
-}
-
-function BeaconEntry( { entry } ) {
-  let time = formatDateAndTime(entry.time);
-  let location = entry.location;
-  
-  return (
-    <tr>
-      <td>{location}</td>
-      <td>{time}</td>
-    </tr>
-  )
-}
-function BeaconTable({ entries, beaconName }) {
- 
-  return (
-    <table className="table">
-      <thead>
-        <tr>
-          <BeaconTitle beaconName={beaconName}/>
-          
-        </tr>
-      </thead>
-      <tbody>
-        { entries.map((entry, index) => (
-          <BeaconEntry key={index} entry={entry}/>
-        ))}
-      </tbody>
-    </table>
-  )
-}
-
-function SoloBeaconTable({ entries, beaconName }) {
- 
-  return (
-    <div>
-      <MainNav/>
-      <div className='solo-beacon-data'>
-        <table className="solo-table">
-          <thead>
-            <tr>
-              <BeaconTitle beaconName={beaconName}/>
-              
-            </tr>
-          </thead>
-          <tbody>
-            { entries.map((entry, index) => (
-              <BeaconEntry key={index} entry={entry}/>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
-
-      
-    </div>
-    
-  )
-}
 
 function BeaconHistory({ nameHistory}) {
   const header = ["Patient", "Last Update"]
@@ -330,31 +264,31 @@ export const App = () => {
 
   const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
   const beaconLocations = useTracker(() => beaconLocationCollection.find({}, {sort: { time: -1} }).fetch());
-  const currentBeacons2 = useTracker(() => currentBeaconCollection.find({}).fetch());
+  const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
   
-  if (currentBeacons2.length > 0) {
-    currentBeacons = currentBeacons2[0].beacons
+  if (currentBeaconsColl.length > 0) {
+    currentBeacons = currentBeaconsColl[0].beacons
+    
   }
 
-  
   if (currentBeacons !== null) {
     beaconData = new Map();
-    currentBeacons.forEach(ID => {
-    beaconData.set(ID, []);
+    currentBeacons.forEach(beacon => {
+    beaconData.set(beacon.ID, []);
+    
+    
   });
 
-    beaconLocations.forEach(entry => {
+    
+  beaconLocations.forEach(entry => {
       if (beaconData.has(entry.beaconID)) {
           beaconData.get(entry.beaconID).push(entry);
+          
       } 
+      
     });
   }
   
-  
-  
-
- 
-
   
   return (
 
@@ -363,44 +297,7 @@ export const App = () => {
       <div>
 
         <Routes>
-          {/* <Route path="/beacon1" element={ <SoloBeaconTable entries={ beacon1Data } beaconName = "beacon1"/> } /> 
-          <Route path="/beacon2" element={ <SoloBeaconTable entries={ beacon2Data } beaconName = "beacon2"/> } /> 
-          <Route path="/beacon3" element={ <SoloBeaconTable entries={ beacon3Data } beaconName = "beacon3"/> } /> 
-          <Route path="/beacon4" element={ <SoloBeaconTable entries={ beacon4Data } beaconName = "beacon4"/> } /> 
-          <Route path="/beacon5" element={ <SoloBeaconTable entries={ beacon5Data } beaconName = "beacon5"/> } />  */}
-          <Route path="/beacons" element={
-            <div className='beacon-overview'>
-
-              <MainNav/>  
-              <div className='all-beacon-data'>
-                <nav className='nav-bar'>
-                  <ul className='nav-list'>
-                    <li className='nav-item'><Link to="/beacon1">Beacon 1</Link></li>
-                    <li className='nav-item'><Link to="/beacon2">Beacon 2</Link></li>
-                    <li className='nav-item'><Link to="/beacon3">Beacon 3</Link></li>
-                    <li className='nav-item'><Link to="/beacon4">Beacon 4</Link></li>
-                    <li className='nav-item'><Link to="/beacon5">Beacon 5</Link></li>
-                    <li className='nav-item'><Link to="/beacon6">Beacon 6</Link></li>
-                    
-                  </ul>
-                </nav>
-
-                
-              
-              
-                <div className="app">
-                  
-                  {/* <BeaconTable entries={ beacon1Data } beaconName = "beacon1"/>
-                  <BeaconTable entries={ beacon2Data } beaconName = "beacon2"/>
-                  <BeaconTable entries={ beacon3Data } beaconName = "beacon3"/>
-                  <BeaconTable entries={ beacon4Data } beaconName = "beacon4"/>
-                  <BeaconTable entries={ beacon5Data } beaconName = "beacon5"/> */}
-           
-                </div> 
-              </div>
-              
-            </div>
-          } />
+          
           <Route path="/" element={ <HomePage/> } /> 
           <Route path="/assign-beacons" element={ 
             <AssignBeacons beaconData={beaconData}/> } /> 

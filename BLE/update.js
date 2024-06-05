@@ -1,7 +1,7 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const fs = require("fs");
 let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
-
+const beaconsJson = (fs.readFileSync('beacons.json', 'utf-8'));
 
 
 // Replace the placeholder with your Atlas connection string
@@ -16,7 +16,9 @@ const client = new MongoClient(config.serverURL,  {
     }
 );
 
-function update(beacon, time, location) {
+async function update(beacon, time, location) {
+  
+
   const myDB = client.db(config.database);
   const beaconColl = myDB.collection(config.beaconLocationCollection);
   
