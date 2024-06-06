@@ -1,9 +1,6 @@
-const { update , client } = require("./update");
-const { AddBeacon, RemoveBeacon, startup } = require("./modify-beacons")
+const { update } = require("./update");
+const { checkDB } = require("./modify-beacons")
 const fs = require("fs");
-const cors = require('cors');
-const express = require('express');
-const bodyParser = require('body-parser');
 let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
 let scannerData = JSON.parse(fs.readFileSync("scanners.json", "utf-8"));
@@ -11,25 +8,13 @@ let scannerData = JSON.parse(fs.readFileSync("scanners.json", "utf-8"));
 
 
 
-async function initialize() {
-  const myDB = client.db(config.database);
-  const nameCollection = myDB.collection(config.CurrentBeaconsCollection);
-  const currentBeaconsDB = await nameCollection.findOne();
-  const beaconsArray = currentBeaconsDB.beacons;
 
-  if (JSON.stringify(beaconsArray) !== JSON.stringify(beaconData.beacons)) {
-    fs.writeFileSync('beacons.json', JSON.stringify(currentBeaconsDB), "utf-8");
-    beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
-    console.log("Database Change made")
-  }
-}
-
-
-function checkDB(interval) {
-  setInterval(initialize, interval);
-}
 
 checkDB(1000)
+
+module.exports = {
+  checkDB
+}
 
 
 function randomDelay(length) {

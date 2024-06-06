@@ -17,7 +17,7 @@ const client = new MongoClient(config.serverURL,  {
 );
 
 async function update(beacon, time, location) {
-  
+  console.log(location)
 
   const myDB = client.db(config.database);
   const beaconColl = myDB.collection(config.beaconLocationCollection);
@@ -30,6 +30,7 @@ async function update(beacon, time, location) {
     time
   }
   beaconColl.insertOne(entry);
+  
   updateNameList(beacon.name, myDB, time)
 
 }

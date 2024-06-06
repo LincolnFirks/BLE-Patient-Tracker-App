@@ -1,10 +1,10 @@
 const BeaconScanner = require('node-beacon-scanner');
 const { update, client } = require("./update");
-const { parse } = require('path');
+const { checkDB } = require("./modify-beacons");
 const fs = require("fs");
 const getMAC = require("getmac").default;
 let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
-
+const distanceReadings = {};
 
 
 const scanner = new BeaconScanner();
@@ -15,7 +15,6 @@ const localMac = getMAC();
 
 // Handle beacon advertisements
 scanner.onadvertisement = (ad) => {
-  console.log(ad)
   HandleAd(ad, new Date());
 };
 
@@ -24,34 +23,49 @@ async function HandleAd(ad, time) {
   let distance = Math.pow(10, exponent) * 3.28; // convert to feet
   distance = parseFloat(distance.toFixed(1)); // this is est. feet from beacon
   
-  const myDB = client.db(config.database);
-  const nameCollection = myDB.collection(config.beaconNameCollection);
-  
-  let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
+  let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons;
+  beaconData.forEach(beacon => {
+    if (!distanceReadings[beacon.ID]) {
+      distanceReadings[beacon.ID] = [];
+    } 
+  })
+  Object.keys(distanceReadings).forEach(key => {
+    if (!beaconData.some(beacon => beacon.ID === key)) {
+      delete distanceReadings[key];
+    }
+  })
 
-  const matchingBeacon = beaconData.beacons.find(beacon => beacon.address === ad.address);
+  // const matchingBeacon = beaconData.find(beacon => beacon.address === ad.address);
 
-  if (matchingBeacon) {
-    HandleUpdate(matchingBeacon, distance, time)
-  }
+  // if (matchingBeacon) {
+  //   HandleUpdate(matchingBeacon, distance, time)
+  // }
+  HandleUpdate(beaconData[0], distance, time)
   
 };
 
 function HandleUpdate(beacon, distance, time) {
-  beacon.distanceReadings.push(distance); // add distance reading to array
-
-  if (beacon.distanceReadings.length < 5) {
+  distanceReadings[beacon.ID].push(distance); // add distance reading to array
+  if (distanceReadings[beacon.ID].length < 5) {
     return; //  if less than 5, keep collecting
   } // otherwise:
- 
-  if (average(beacon.distanceReadings) < 30) {
-    update(beacon, time, localMac);
-    // if within 30 feet and current location is outside, send update 
+  if (average(distanceReadings[beacon.ID]) < 30) {
+    const scanners = JSON.parse(fs.readFileSync("scanners.json", "utf-8")).scanners;
+    const matchingScanner = scanners.find(scanner => scanner.address === localMac);
+    if (matchingScanner) {
+      update(beacon, time, matchingScanner.location);
+    }
   } 
-  beacon.distanceReadings = [];
+  distanceReadings[beacon.ID] = [];
 }
-// connect to MongoDB server and start scanning for BLE advertisements.
-async function initiate() {
+
+
+async function initiateScan() {
+  
+  JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons.forEach(beacon => {
+    distanceReadings[beacon.ID] = [];
+  })
+
   await client.connect();
   // Send a ping to confirm a successful connection
   await client.db("admin").command({ ping: 1 });
@@ -63,7 +77,10 @@ async function initiate() {
   });
 }
 
-initiate();
+initiateScan();
+checkDB(1000);
+
+
 
 // take average of array of nums (used for the distance calculations.)
 function average(array) {

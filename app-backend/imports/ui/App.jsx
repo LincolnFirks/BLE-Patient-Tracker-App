@@ -251,13 +251,7 @@ function NameHistory({beaconData}) {
 
 
 export const App = () => {
-  // const beacon1Data = useTracker(() => beacon1Collection.find({}, {sort: { time: -1} }).fetch());
-  // const beacon2Data = useTracker(() => beacon2Collection.find({}, {sort: { time: -1} }).fetch());
-  // const beacon3Data = useTracker(() => beacon3Collection.find({}, {sort: { time: -1} }).fetch());
-  // const beacon4Data = useTracker(() => beacon4Collection.find({}, {sort: { time: -1} }).fetch());
-  // const beacon5Data = useTracker(() => beacon5Collection.find({}, {sort: { time: -1} }).fetch());
-  // const beaconArray = [beacon1Data,beacon2Data,beacon3Data,beacon4Data,beacon5Data]
-  // const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
+
 
   let currentBeacons = [];
   let beaconData = [];

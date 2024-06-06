@@ -24,8 +24,7 @@ Meteor.methods({
     const newBeacon = {
       ID,
       name: "-",
-      address,
-      distanceReadings: []
+      address
     }
     currentBeaconCollection.updateAsync(
       { },
