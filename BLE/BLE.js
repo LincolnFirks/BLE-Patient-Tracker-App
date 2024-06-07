@@ -19,18 +19,18 @@ scanner.onadvertisement = (ad) => {
 };
 
 async function HandleAd(ad, time) {
-  let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * 2);
-  let distance = Math.pow(10, exponent) * 3.28; // convert to feet
-  distance = parseFloat(distance.toFixed(1)); // this is est. feet from beacon
+  
   
   let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons;
+  let beaconIDs = new Set(beaconData.map(beacon => beacon.ID));
+
   beaconData.forEach(beacon => {
     if (!distanceReadings[beacon.ID]) {
       distanceReadings[beacon.ID] = [];
     } 
   })
   Object.keys(distanceReadings).forEach(key => {
-    if (!beaconData.some(beacon => beacon.ID === key)) {
+    if (!beaconIDs.has(key)) {
       delete distanceReadings[key];
     }
   })
@@ -40,6 +40,11 @@ async function HandleAd(ad, time) {
   // if (matchingBeacon) {
   //   HandleUpdate(matchingBeacon, distance, time)
   // }
+
+  let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * 2);
+  let distance = Math.pow(10, exponent) * 3.28; // convert to feet
+  distance = parseFloat(distance.toFixed(1)); // this is est. feet from beacon
+
   HandleUpdate(beaconData[0], distance, time)
   
 };

@@ -61,13 +61,13 @@ function AssignBeacons({beaconData}) {
         </thead>
         <tbody>
           {Array.from(beaconData).map(([key, beacon]) => (
-            beacon.length > 0 ? 
-              <tr key={key}>
-                <td onClick={() => {ShowEditPanel(beacon[0].name, key)}}>{beacon[0].name}</td>
-                <td>{key}</td>
-                <td>{beacon[0].address}</td>
-                <td>{beacon[0].location}</td>
-              </tr> : <tr key={key}></tr>
+             
+              <tr key={key.ID}>
+                <td onClick={() => {ShowEditPanel(key.name, key.ID)}}>{key.name}</td>
+                <td>{key.ID}</td>
+                <td>{key.address}</td>
+                <td>{beacon.location}</td>
+              </tr>
           ))}
         </tbody>
       </table>
@@ -268,18 +268,26 @@ export const App = () => {
   if (currentBeacons !== null) {
     beaconData = new Map();
     currentBeacons.forEach(beacon => {
-    beaconData.set(beacon.ID, []);
-    
+      beaconData.set(beacon, {});
+      // Example key: { ID: '0001', name: 'John', address: 'e6:35:d9:9a:b9:34' }
     
   });
 
-    
-  beaconLocations.forEach(entry => {
-      if (beaconData.has(entry.beaconID)) {
-          beaconData.get(entry.beaconID).push(entry);
-          
-      } 
-      
+  /* example beaconNames entry:
+    {
+      _id: ObjectId('665e14292027bf90d580f96a'),
+      name: 'Jane',
+      time: ISODate('2024-06-07T17:12:18.874Z'),
+      location: 'ICU'
+    }
+  */
+  beaconNames.forEach(entry => {
+      for (const key of beaconData.keys()) {
+        if (key.name === entry.name) {
+          beaconData.set(key, {time: entry.time, location: entry.location})
+          return;
+        }
+      }
     });
   }
   
