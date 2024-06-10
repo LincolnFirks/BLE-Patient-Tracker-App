@@ -1,1 +1,35 @@
-{"_id":"6661e0af55b1e5fe4b37bac0","beacons":[{"ID":"0001","name":"John","address":"e6:35:d9:9a:b9:34"},{"ID":"0002","name":"Jane","address":"f3:cf:3c:d9:2c:bc"},{"ID":"0003","name":"Jason","address":"eb:ce:2d:6c:93:cd"},{"ID":"0004","name":"Alex","address":"d9:39:50:da:1d:13"},{"ID":"0005","name":"Steve","address":"e4:e1:eb:4a:3e:86"}]}
+{
+  "_id": "6667429c0eefcc0b203db6e3",
+  "beacons": [
+    {
+      "ID": "0001",
+      "name": "John",
+      "address": "e6:35:d9:9a:b9:34",
+      "location": "Emergency Room"
+    },
+    {
+      "ID": "0002",
+      "name": "Jane",
+      "address": "f3:cf:3c:d9:2c:bc",
+      "location": "Emergency Room"
+    },
+    {
+      "ID": "0003",
+      "name": "Jason",
+      "address": "eb:ce:2d:6c:93:cd",
+      "location": "Receptionist"
+    },
+    {
+      "ID": "0004",
+      "name": "Alex",
+      "address": "d9:39:50:da:1d:13",
+      "location": "Oncology"
+    },
+    {
+      "ID": "0005",
+      "name": "Steve",
+      "address": "e4:e1:eb:4a:3e:86",
+      "location": "Emergency Room"
+    }
+  ]
+}

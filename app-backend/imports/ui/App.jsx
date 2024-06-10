@@ -20,7 +20,7 @@ function HomePage({}) {
   )
 }
 
-function AssignBeacons({beaconData}) {
+function AssignBeacons({currentBeacons}) {
   const header = ["Patient Name", "Beacon ID", "Beacon Address", "Location"];
   const [createPanel, setCreatePanel] = useState(false);
   const [editPanel, setEditPanel] = useState(false);
@@ -60,12 +60,12 @@ function AssignBeacons({beaconData}) {
           </tr>
         </thead>
         <tbody>
-          {Array.from(beaconData).map(([key, beacon]) => (
+          {currentBeacons.map((beacon, index) => (
              
-              <tr key={key.ID}>
-                <td onClick={() => {ShowEditPanel(key.name, key.ID)}}>{key.name}</td>
-                <td>{key.ID}</td>
-                <td>{key.address}</td>
+              <tr key={index}>
+                <td onClick={() => {ShowEditPanel(beacon.name, beacon.ID)}}>{beacon.name}</td>
+                <td>{beacon.ID}</td>
+                <td>{beacon.address}</td>
                 <td>{beacon.location}</td>
               </tr>
           ))}
@@ -114,7 +114,7 @@ function AssignPanel({onToggleCreatePanel}) {
           value={IDvalue} 
           onChange={HandleIDChange} 
         />
-      <p>Beacon Adress:</p>
+      <p>Beacon Address:</p>
       <input 
           type="text" 
           value={AdressValue} 
@@ -253,43 +253,18 @@ function NameHistory({beaconData}) {
 export const App = () => {
 
 
-  let currentBeacons = [];
-  let beaconData = [];
+  
+  
 
   const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
   const beaconLocations = useTracker(() => beaconLocationCollection.find({}, {sort: { time: -1} }).fetch());
   const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
   
+  let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {
     currentBeacons = currentBeaconsColl[0].beacons
-    
   }
 
-  if (currentBeacons !== null) {
-    beaconData = new Map();
-    currentBeacons.forEach(beacon => {
-      beaconData.set(beacon, {});
-      // Example key: { ID: '0001', name: 'John', address: 'e6:35:d9:9a:b9:34' }
-    
-  });
-
-  /* example beaconNames entry:
-    {
-      _id: ObjectId('665e14292027bf90d580f96a'),
-      name: 'Jane',
-      time: ISODate('2024-06-07T17:12:18.874Z'),
-      location: 'ICU'
-    }
-  */
-  beaconNames.forEach(entry => {
-      for (const key of beaconData.keys()) {
-        if (key.name === entry.name) {
-          beaconData.set(key, {time: entry.time, location: entry.location})
-          return;
-        }
-      }
-    });
-  }
   
   
   return (
@@ -302,7 +277,7 @@ export const App = () => {
           
           <Route path="/" element={ <HomePage/> } /> 
           <Route path="/assign-beacons" element={ 
-            <AssignBeacons beaconData={beaconData}/> } /> 
+            <AssignBeacons currentBeacons={currentBeacons}/> } /> 
 
           <Route path="/beacon-history" element={ <BeaconHistory nameHistory={beaconNames}/> } /> 
           <Route path="/history/:name" element={  <NameHistory beaconData={beaconLocations}/>} /> 

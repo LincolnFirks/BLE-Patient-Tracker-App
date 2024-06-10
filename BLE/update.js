@@ -29,28 +29,42 @@ async function update(beacon, time, location) {
   }
   beaconColl.insertOne(entry);
   
-  updateNameList(beacon.name, myDB, time, location)
+  updateCollections(beacon.name, beacon.ID, myDB, time, location);
+  
 
 }
 
-async function updateNameList(beaconName, db, time, location) {
+async function updateCollections(beaconName, beaconID, db, time, location) {
+  try { // update currentBeacons with location and time
+    const currentBeacons = db.collection(config.CurrentBeaconsCollection);
+    currentBeacons.updateOne(
+      { "beacons.ID": beaconID },
+      { $set: { "beacons.$.location": location } }
+    );
+  } catch (error) {
+    console.error("Error updating current beacon:", error);
+  }
+
   try {
     const nameCollection = db.collection(config.beaconNameCollection);
     const checkName = await nameCollection.findOne({ name: beaconName });
     if (!checkName) {
-      const result = await nameCollection.insertOne({ name: beaconName, time, location });
+      const result = await nameCollection.insertOne({ name: beaconName, time });
       console.log("New name inserted:", result.insertedId);
     } else {
-      await nameCollection.updateOne({_id: checkName._id},{$set: {time, location}});
+      await nameCollection.updateOne({_id: checkName._id},{$set: {time}});
     }
   } catch (error) {
     console.error("Error inserting name:", error);
   }
+
 }
+
+
 
 
 module.exports = {
   update,
-  updateNameList,
+  updateCollections,
   client
 }
