@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { beaconLocationCollection, beaconNameCollection, currentBeaconCollection  } from '/imports/api/TasksCollection';
 import axios from 'axios';
+import { Mongo } from 'meteor/mongo'
 
 
 
@@ -12,13 +13,35 @@ Meteor.publish('tasks', () => {
 });
 
 Meteor.methods({
-  'PostName'(oldID, newName) {
+  'PostName'(ID, newName) {
+
+    const timestamp = new Date();
+
     currentBeaconCollection.updateAsync(
-      { 'beacons.ID': oldID},
+      { 'beacons.ID': ID},
       { $set: { 'beacons.$.name': newName } }
     );
 
     Meteor.call('PostChange');
+
+    beaconLocationCollection.findOneAsync(
+      { beaconID: ID }
+    ).then(doc => {
+      beaconLocationCollection.insertAsync({
+        beaconID: ID,
+        name: newName,
+        address: doc.address,
+        location: doc.location,
+        time: timestamp
+      })
+    });
+
+    beaconNameCollection.updateAsync(
+      { name: newName }, 
+      { $set: { time: timestamp } }, 
+      { upsert: true } 
+    )
+    
   },
 
   'AddBeacon'(ID, address) {
@@ -52,7 +75,7 @@ Meteor.methods({
 
     postURLs.forEach(URL => {
       axios.post(URL)
-        .catch(error => console.error(error));
+        .catch(error => console.log("Axios post failed"));
     });
   }
 

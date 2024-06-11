@@ -1,17 +1,13 @@
 const BeaconScanner = require('node-beacon-scanner');
 const { update, client } = require("./update");
-const { checkDB } = require("./modify-beacons");
+const { UpdateLocal } = require("./listen");
 const fs = require("fs");
 const getMAC = require("getmac").default;
-let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+
+
 const distanceReadings = {};
-
-
 const scanner = new BeaconScanner();
-
 const localMac = getMAC();
-
-
 
 // Handle beacon advertisements
 scanner.onadvertisement = (ad) => {
@@ -19,8 +15,6 @@ scanner.onadvertisement = (ad) => {
 };
 
 async function HandleAd(ad, time) {
-  
-  
   let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons;
   let beaconIDs = new Set(beaconData.map(beacon => beacon.ID));
 
@@ -66,6 +60,8 @@ function HandleUpdate(beacon, distance, time) {
 
 
 async function initiateScan() {
+
+  await UpdateLocal();
   
   JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons.forEach(beacon => {
     distanceReadings[beacon.ID] = [];
@@ -83,7 +79,7 @@ async function initiateScan() {
 }
 
 initiateScan();
-checkDB(1000);
+
 
 
 

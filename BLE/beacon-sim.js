@@ -1,15 +1,12 @@
 const { update } = require("./update");
 const { UpdateLocal } = require("./listen");
 const fs = require("fs");
-let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 
 
 
-UpdateLocal();
-
-
-function BeaconSim(length) {
+async function BeaconSim(length) {
   
+  await UpdateLocal();
 
   let intervalID = setInterval(() => {
     let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8"));
