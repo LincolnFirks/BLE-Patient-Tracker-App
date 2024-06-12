@@ -1,27 +1,70 @@
 import { Meteor } from 'meteor/meteor';
-import { HTTP } from 'meteor/http';
-import { Mongo } from 'meteor/mongo'
-import { beaconLocationCollection, beaconNameCollection, currentBeaconCollection  } from '/imports/api/TasksCollection';
-
-
+import { beaconLocationCollection, beaconNameCollection,
+   currentBeaconCollection, ConfigCollection, ScannerCollection  } from '/imports/api/TasksCollection';
+import { WebApp } from 'meteor/webapp'
+import bodyParser from 'body-parser';
 
 
 
 Meteor.publish('tasks', () => { 
-  return [beaconLocationCollection.find(),beaconNameCollection.find(), currentBeaconCollection.find()];
+  return [beaconLocationCollection.find(),beaconNameCollection.find(),
+     currentBeaconCollection.find(), ConfigCollection.find(), ScannerCollection.find()];
 
 });
 
+WebApp.connectHandlers.use(bodyParser.json());
+
+
+WebApp.connectHandlers.use('/config-update', (req, res, next) => {
+  if (req.method === 'POST') {
+    console.log(req.body)
+}});
+
+
 Meteor.methods({
-  'PostName'(oldID, newName) {
+  'PostName'(ID, newName) {
+
+    const timestamp = new Date();
+
     currentBeaconCollection.updateAsync(
-      { 'beacons.ID': oldID},
+      { 'beacons.ID': ID},
       { $set: { 'beacons.$.name': newName } }
     );
+
+    ConfigCollection.updateAsync(
+      { 'beacons.ID': ID},
+      { $set: { 'beacons.$.name': newName } }
+    );
+
+    beaconLocationCollection.findOneAsync(
+      { beaconID: ID }, { sort: { time: -1 } }
+    ).then(doc => {
+      beaconLocationCollection.insertAsync({
+        beaconID: ID,
+        name: newName,
+        address: doc.address,
+        location: doc.location,
+        time: timestamp
+      })
+    });
+
+    beaconNameCollection.updateAsync(
+      { name: newName }, 
+      { $set: { time: timestamp } }, 
+      { upsert: true } 
+    )
+    
+
   },
 
   'AddBeacon'(ID, address) {
     const newBeacon = {
+      ID,
+      name: "-",
+      address,
+      location: "-"
+    }
+    const newBeaconConfig = {
       ID,
       name: "-",
       address
@@ -30,6 +73,11 @@ Meteor.methods({
       { },
       { $push: { beacons: newBeacon } }
     );
+
+    ConfigCollection.updateAsync(
+      { },
+      { $push: { beacons: newBeaconConfig } }
+    );
   },
 
   'RemoveBeacon'(removeID) {
@@ -37,10 +85,11 @@ Meteor.methods({
       { },
       { $pull: { beacons: {ID: removeID } } }
     );
+    ConfigCollection.updateAsync(
+      { },
+      { $pull: { beacons: {ID: removeID } } }
+    );
 
   }
-
-  
-
 
 })

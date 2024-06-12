@@ -7,7 +7,7 @@ let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 // Replace the placeholder with your Atlas connection string
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(config.serverURL,  {
+const client = new MongoClient(config.databaseURL,  {
         serverApi: {
             version: ServerApiVersion.v1,
             strict: true,
@@ -35,7 +35,7 @@ async function update(beacon, time, location) {
 }
 
 async function updateCollections(beaconName, beaconID, db, time, location) {
-  try { // update currentBeacons with location and time
+  try { // update currentBeacons with location
     const currentBeacons = db.collection(config.CurrentBeaconsCollection);
     currentBeacons.updateOne(
       { "beacons.ID": beaconID },

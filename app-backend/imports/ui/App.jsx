@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
-import { beaconNameCollection, beaconLocationCollection, currentBeaconCollection } from '/imports/api/TasksCollection';
+import { beaconNameCollection, beaconLocationCollection,
+   currentBeaconCollection, ConfigCollection, ScannerCollection } from '/imports/api/TasksCollection';
 import { formatDateAndTime } from '/client/main';
 
 
@@ -20,8 +21,9 @@ function HomePage({}) {
   )
 }
 
-function AssignBeacons({currentBeacons}) {
-  const header = ["Patient Name", "Beacon ID", "Beacon Address", "Location"];
+function AssignBeacons({currentBeacons, currentScanners}) {
+  const header = ["Patient Name", "Beacon ID", "MAC Address", "Location"];
+  const scannerHeader = ["Location", "MAC Address", "Status"]
   const [createPanel, setCreatePanel] = useState(false);
   const [editPanel, setEditPanel] = useState(false);
   const [editName, setName] = useState("");
@@ -76,6 +78,27 @@ function AssignBeacons({currentBeacons}) {
 
       {createPanel && <AssignPanel onToggleCreatePanel={ToggleCreatePanel}/>}
       {editPanel && <EditPanel name={editName} ID={editID} onToggleEditPanel={ToggleEditPanel}/>}
+
+
+      <table className='assign-table'>
+        <thead>
+          <tr>
+            {scannerHeader.map((heading, index) => (
+              <th key={index}>{heading}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {currentScanners.map((scanner, index) => (
+             
+              <tr key={index}>
+                <td>{scanner.location}</td>
+                <td>{scanner.address}</td>
+                <td>{formatDateAndTime(scanner.lastUpdate)}</td>
+              </tr>
+          ))}
+        </tbody>
+      </table>
       
 
       
@@ -259,10 +282,16 @@ export const App = () => {
   const beaconNames = useTracker(() => beaconNameCollection.find({}, {sort: { time: -1} }).fetch());
   const beaconLocations = useTracker(() => beaconLocationCollection.find({}, {sort: { time: -1} }).fetch());
   const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
+  const currentScannersColl = useTracker(() => ScannerCollection.find({}).fetch());
   
   let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {
     currentBeacons = currentBeaconsColl[0].beacons
+  }
+
+  let currentScanners = [];
+  if (currentScannersColl.length > 0) {
+    currentScanners = currentScannersColl[0].scanners
   }
 
   
@@ -277,7 +306,7 @@ export const App = () => {
           
           <Route path="/" element={ <HomePage/> } /> 
           <Route path="/assign-beacons" element={ 
-            <AssignBeacons currentBeacons={currentBeacons}/> } /> 
+            <AssignBeacons currentBeacons={currentBeacons} currentScanners={currentScanners}/> } /> 
 
           <Route path="/beacon-history" element={ <BeaconHistory nameHistory={beaconNames}/> } /> 
           <Route path="/history/:name" element={  <NameHistory beaconData={beaconLocations}/>} /> 

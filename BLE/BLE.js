@@ -3,7 +3,7 @@ const { update, client } = require("./update");
 const { checkDB } = require("./modify-beacons");
 const fs = require("fs");
 const getMAC = require("getmac").default;
-let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+
 const distanceReadings = {};
 
 
@@ -19,9 +19,9 @@ scanner.onadvertisement = (ad) => {
 };
 
 async function HandleAd(ad, time) {
+  const config = JSON.parse(fs.readFileSync('./config.json'));
   
-  
-  let beaconData = JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons;
+  let beaconData = config.beacons
   let beaconIDs = new Set(beaconData.map(beacon => beacon.ID));
 
   beaconData.forEach(beacon => {
@@ -45,17 +45,17 @@ async function HandleAd(ad, time) {
   let distance = Math.pow(10, exponent) * 3.28; // convert to feet
   distance = parseFloat(distance.toFixed(1)); // this is est. feet from beacon
 
-  HandleUpdate(beaconData[0], distance, time)
+  HandleUpdate(beaconData[0], distance, time, config)
   
 };
 
-function HandleUpdate(beacon, distance, time) {
+function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.ID].push(distance); // add distance reading to array
   if (distanceReadings[beacon.ID].length < 5) {
     return; //  if less than 5, keep collecting
   } // otherwise:
   if (average(distanceReadings[beacon.ID]) < 30) {
-    const scanners = JSON.parse(fs.readFileSync("scanners.json", "utf-8")).scanners;
+    const scanners = config.scanners;
     const matchingScanner = scanners.find(scanner => scanner.address === localMac);
     if (matchingScanner) {
       update(beacon, time, matchingScanner.location);
@@ -66,8 +66,8 @@ function HandleUpdate(beacon, distance, time) {
 
 
 async function initiateScan() {
-  
-  JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons.forEach(beacon => {
+  const config = JSON.parse(fs.readFileSync('./config.json'));
+  config.beacons.forEach(beacon => { // set up initial distanceReadings
     distanceReadings[beacon.ID] = [];
   })
 
