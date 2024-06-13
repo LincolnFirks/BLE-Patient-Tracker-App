@@ -17,6 +17,10 @@ WebApp.connectHandlers.use(bodyParser.json());
 
 WebApp.connectHandlers.use('/config-update', (req, res, next) => {
   if (req.method === 'POST') {
+    ScannerCollection.updateAsync(
+      { 'scanners.address': req.body.address },
+      { $set: { 'scanners.$.lastUpdate': new Date() } }
+    )
     console.log(req.body)
   }
 }); // recieve notifcation from device that config was updated.
@@ -36,27 +40,33 @@ Meteor.methods({
       { $set: { 'beacons.$.name': newName } }
     ); // change name in Config
 
-    // make entry at current location for new name
-    beaconLocationCollection.findOneAsync( 
-      { beaconID: ID }, { sort: { time: -1 } }
-      // get most recent entry with this beacon
-    ).then(doc => {
-      beaconLocationCollection.insertAsync({
-        beaconID: ID,
-        name: newName,
-        address: doc.address,
-        location: doc.location,
-        time: timestamp
-      })
+    if (newName !== "-") {
+        // make entry at current location for new name
+      beaconLocationCollection.findOneAsync( 
+        { beaconID: ID }, { sort: { time: -1 } }
+        // get most recent entry with this beacon
+      ).then(doc => {
+        if (doc) {
+          beaconLocationCollection.insertAsync({
+            beaconID: ID,
+            name: newName,
+            address: doc.address,
+            location: doc.location,
+            time: timestamp
+          })
+        } // make location entry with that location
+      });
 
-      // make location entry with that location
-    });
+      beaconNameCollection.updateAsync(
+        { name: newName },
+        { $set: { time: timestamp } },
+        { upsert: true }
+      ) // update Name collection if new name or just timestamp
+    }
 
-    beaconNameCollection.updateAsync(
-      { name: newName },
-      { $set: { time: timestamp } },
-      { upsert: true }
-    ) // update Name collection if new name or just timestamp
+    
+
+    b
   },
 
   'AddBeacon'(ID, address) {

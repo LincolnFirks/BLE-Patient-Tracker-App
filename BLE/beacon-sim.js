@@ -11,19 +11,15 @@ module.exports = {
 }
 
 
-function randomDelay(length) {
-  return Math.floor(Math.random() * length);
-}
-
 function BeaconSim(length) {
   
   let intervalID = setInterval(() => {
     const config = JSON.parse(fs.readFileSync('./config.json'));
     let beaconData = config.beacons;
     let scannerData = config.scanners;
-    let beaconIndex = randomDelay(beaconData.length);
-    let scannerIndex = randomDelay(scannerData.length);
-    update(beaconData[beaconIndex], new Date(), scannerData[scannerIndex].location);
+    let beaconIndex = randomIndex(beaconData.length);
+    let scannerIndex = randomIndex(scannerData.length);
+    update(beaconData[beaconIndex], new Date(), scannerData[scannerIndex].location, config);
     console.log(`${beaconData[beaconIndex].name} #${beaconData[beaconIndex].ID} arrived at ${scannerData[scannerIndex].location}`);
   }, 2000)
 

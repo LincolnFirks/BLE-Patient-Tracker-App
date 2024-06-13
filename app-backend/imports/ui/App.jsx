@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import {
@@ -6,6 +6,7 @@ import {
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/TasksCollection';
 import { formatDateAndTime } from '/client/main';
+import ms from 'ms'
 
 function HomePage({ }) {
   return (
@@ -86,14 +87,16 @@ function AssignBeacons({ currentBeacons, currentScanners }) {
             </tr>
           </thead>
           <tbody>
-            {currentScanners.map((scanner, index) => (
+            {currentScanners.map((scanner, index) => {
 
-              <tr key={index}>
-                <td>{scanner.location}</td>
-                <td>{scanner.address}</td>
-                <td>{formatDateAndTime(scanner.lastUpdate)}</td>
-              </tr>
-            ))}
+              return (
+                <tr key={index}>
+                  <td>{scanner.location}</td>
+                  <td>{scanner.address}</td>
+                  <td>{scanner.status}</td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
 
@@ -259,17 +262,30 @@ export const App = () => {
   const beaconNames = useTracker(() => beaconNameCollection.find({}, { sort: { time: -1 } }).fetch());
   const beaconLocations = useTracker(() => beaconLocationCollection.find({}, { sort: { time: -1 } }).fetch());
   const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
-  const currentScannersColl = useTracker(() => ScannerCollection.find({}).fetch());
+  
 
   let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {
     currentBeacons = currentBeaconsColl[0].beacons
   }
 
-  let currentScanners = [];
-  if (currentScannersColl.length > 0) {
-    currentScanners = currentScannersColl[0].scanners
-  }
+  
+  const [currentScanners, setCurrentScanners] = useState([]);
+  
+  const fetchScanners = async () => {
+    const scannersColl = await ScannerCollection.find({}).fetch();
+    const scanners = scannersColl.length > 0 ? scannersColl[0].scanners : [];
+
+    scanners.forEach(scanner => {
+      const since = new Date() - scanner.lastUpdate;
+      scanner.status = since > 5000 ? `Offline for ${ms(since, {long: true})}` : "Online";
+    });
+
+    setCurrentScanners(scanners);
+  };
+  fetchScanners();
+
+
 
   return (
     <BrowserRouter>
@@ -285,5 +301,3 @@ export const App = () => {
     </BrowserRouter>
   )
 }
-
-

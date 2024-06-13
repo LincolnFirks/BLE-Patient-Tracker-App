@@ -18,8 +18,7 @@ async function configure() {
   } // local and database don't match, rewrite local
   
   let postData = {
-    scannerMAC: localMAC,
-    time: new Date()
+    address: localMAC,
   }
   axios.post(`${config.serverURL}/config-update`,postData)
     .catch(error => console.error(error));

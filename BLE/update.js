@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const fs = require("fs");
+
+const config = require("./config.json")
 
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -47,7 +48,6 @@ async function updateCollections(beaconName, beaconID, db, time, location) {
       const checkName = await nameCollection.findOne({ name: beaconName });
       if (!checkName) {
         const result = await nameCollection.insertOne({ name: beaconName, time });
-        console.log("New name inserted:", result.insertedId);
       } else {
         await nameCollection.updateOne({_id: checkName._id},{$set: {time}});
       }
