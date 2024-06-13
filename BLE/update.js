@@ -2,10 +2,6 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 const fs = require("fs");
 let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
 
-
-
-// Replace the placeholder with your Atlas connection string
-
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(config.databaseURL,  {
         serverApi: {
@@ -27,11 +23,11 @@ async function update(beacon, time, location) {
     location,
     time
   }
-  beaconColl.insertOne(entry);
+  if (beacon.name !== "-") {
+    beaconColl.insertOne(entry);
+  }
   
   updateCollections(beacon.name, beacon.ID, myDB, time, location);
-  
-
 }
 
 async function updateCollections(beaconName, beaconID, db, time, location) {
@@ -45,18 +41,21 @@ async function updateCollections(beaconName, beaconID, db, time, location) {
     console.error("Error updating current beacon:", error);
   }
 
-  try {
-    const nameCollection = db.collection(config.beaconNameCollection);
-    const checkName = await nameCollection.findOne({ name: beaconName });
-    if (!checkName) {
-      const result = await nameCollection.insertOne({ name: beaconName, time });
-      console.log("New name inserted:", result.insertedId);
-    } else {
-      await nameCollection.updateOne({_id: checkName._id},{$set: {time}});
+  if (beaconName !== "-") {
+    try { // update BeaconNames with name + timestamp
+      const nameCollection = db.collection(config.beaconNameCollection);
+      const checkName = await nameCollection.findOne({ name: beaconName });
+      if (!checkName) {
+        const result = await nameCollection.insertOne({ name: beaconName, time });
+        console.log("New name inserted:", result.insertedId);
+      } else {
+        await nameCollection.updateOne({_id: checkName._id},{$set: {time}});
+      }
+    } catch (error) {
+      console.error("Error updating names:", error);
     }
-  } catch (error) {
-    console.error("Error inserting name:", error);
   }
+  
 
 }
 

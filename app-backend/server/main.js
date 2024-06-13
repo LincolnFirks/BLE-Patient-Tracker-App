@@ -1,25 +1,23 @@
 import { Meteor } from 'meteor/meteor';
-import { beaconLocationCollection, beaconNameCollection,
-   currentBeaconCollection, ConfigCollection, ScannerCollection  } from '/imports/api/TasksCollection';
+import {
+  beaconLocationCollection, beaconNameCollection,
+  currentBeaconCollection, ConfigCollection, ScannerCollection
+} from '/imports/api/TasksCollection';
 import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser';
 
-
-
-Meteor.publish('tasks', () => { 
-  return [beaconLocationCollection.find(),beaconNameCollection.find(),
-     currentBeaconCollection.find(), ConfigCollection.find(), ScannerCollection.find()];
-
+Meteor.publish('data', () => {
+  return [beaconLocationCollection.find(), beaconNameCollection.find(),
+  currentBeaconCollection.find(), ConfigCollection.find(), ScannerCollection.find()];
 });
 
 WebApp.connectHandlers.use(bodyParser.json());
 
-
 WebApp.connectHandlers.use('/config-update', (req, res, next) => {
   if (req.method === 'POST') {
     console.log(req.body)
-}});
-
+  }
+});
 
 Meteor.methods({
   'PostName'(ID, newName) {
@@ -27,12 +25,12 @@ Meteor.methods({
     const timestamp = new Date();
 
     currentBeaconCollection.updateAsync(
-      { 'beacons.ID': ID},
+      { 'beacons.ID': ID },
       { $set: { 'beacons.$.name': newName } }
     );
 
     ConfigCollection.updateAsync(
-      { 'beacons.ID': ID},
+      { 'beacons.ID': ID },
       { $set: { 'beacons.$.name': newName } }
     );
 
@@ -49,12 +47,10 @@ Meteor.methods({
     });
 
     beaconNameCollection.updateAsync(
-      { name: newName }, 
-      { $set: { time: timestamp } }, 
-      { upsert: true } 
+      { name: newName },
+      { $set: { time: timestamp } },
+      { upsert: true }
     )
-    
-
   },
 
   'AddBeacon'(ID, address) {
@@ -70,26 +66,24 @@ Meteor.methods({
       address
     }
     currentBeaconCollection.updateAsync(
-      { },
+      {},
       { $push: { beacons: newBeacon } }
     );
 
     ConfigCollection.updateAsync(
-      { },
+      {},
       { $push: { beacons: newBeaconConfig } }
     );
   },
 
   'RemoveBeacon'(removeID) {
     currentBeaconCollection.updateAsync(
-      { },
-      { $pull: { beacons: {ID: removeID } } }
+      {},
+      { $pull: { beacons: { ID: removeID } } }
     );
     ConfigCollection.updateAsync(
-      { },
-      { $pull: { beacons: {ID: removeID } } }
+      {},
+      { $pull: { beacons: { ID: removeID } } }
     );
-
   }
-
 })
