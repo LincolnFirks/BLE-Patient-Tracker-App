@@ -1,6 +1,6 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const fs = require("fs");
-let config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(config.databaseURL,  {
@@ -12,9 +12,9 @@ const client = new MongoClient(config.databaseURL,  {
     }
 );
 
-async function update(beacon, time, location) {
-  const myDB = client.db(config.database);
-  const beaconColl = myDB.collection(config.beaconLocationCollection);
+async function update(beacon, time, location, config) {
+  const myDB = client.db(config.database); // get database
+  const beaconColl = myDB.collection(config.beaconLocationCollection); // main collection
   
   let entry = {
     beaconID: beacon.ID,
@@ -24,14 +24,14 @@ async function update(beacon, time, location) {
     time
   }
   if (beacon.name !== "-") {
-    beaconColl.insertOne(entry);
+    beaconColl.insertOne(entry); // insert into main collection
   }
   
-  updateCollections(beacon.name, beacon.ID, myDB, time, location);
+  updateCollections(beacon.name, beacon.ID, myDB, time, location); // update other collections
 }
 
 async function updateCollections(beaconName, beaconID, db, time, location) {
-  try { // update currentBeacons with location
+  try { // update currentBeacons with location 
     const currentBeacons = db.collection(config.CurrentBeaconsCollection);
     currentBeacons.updateOne(
       { "beacons.ID": beaconID },
