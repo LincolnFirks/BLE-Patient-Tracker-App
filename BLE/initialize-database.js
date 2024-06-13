@@ -1,14 +1,30 @@
 const fs = require("fs");
 const { client } = require("./update");
-const config = JSON.parse(fs.readFileSync("config.json", "utf-8"));
+const config = require("./config.json")
 
 const myDB = client.db(config.database);
-const beaconCollection = myDB.collection(config.CurrentBeaconsCollection);
+const ConfigCollection = myDB.collection(config.ConfigCollection);
+const currentBeaconCollection = myDB.collection(config.CurrentBeaconsCollection);
+const currentScannerCollection = myDB.collection(config.CurrentScannersCollection);
 
-const beaconArray = JSON.parse(fs.readFileSync("beacons.json", "utf-8")).beacons;
+const currentBeaconsArray = config.beacons.map(beacon => {
+  return { ...beacon, location: "-" }
+})
+
+const currentScannersArray = config.scanners.map(scanner => {
+  return { ...scanner, lastUpdate: new Date() }
+})
 
 async function updateDB() {
-  await beaconCollection.updateOne({}, {$set: {beacons: beaconArray}}, { upsert: true });
+  try {
+    await ConfigCollection.updateOne({}, {$set: config}, { upsert: true });
+    await currentBeaconCollection.updateOne({}, {$set: {beacons: currentBeaconsArray}}, { upsert: true });
+    await currentScannerCollection.updateOne({}, {$set: {scanners: currentScannersArray}}, { upsert: true });
+    
+  } catch(error) {
+    console.log(error)
+  }
+  
   process.exit();
 }
 
