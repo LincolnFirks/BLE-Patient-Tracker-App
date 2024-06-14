@@ -1,6 +1,6 @@
 const BeaconScanner = require('node-beacon-scanner');
 const { update, client } = require("./update");
-const { checkDB } = require("./modify-beacons");
+const { checkDB } = require("./update-config");
 const fs = require("fs");
 const getMAC = require("getmac").default;
 const distanceReadings = {};
