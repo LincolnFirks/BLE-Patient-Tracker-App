@@ -72,8 +72,6 @@ body {
   background-color: rgb(220, 220, 220);
 }
 
-
-
 .beacon-overview {
   display: flex;
   flex-direction: row;
@@ -123,8 +121,6 @@ body {
   align-items: center;
   justify-content: center;
 }
-
-
 
 .inner-edit-panel {
   text-align: center;

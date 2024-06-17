@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import {
@@ -99,7 +99,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 
         <button className='assign-button' onClick={ToggleCreateBeaconPanel}>Add a Beacon</button>
 
-        {createBeaconPanel && <AssignPanel onToggleCreatePanel={ToggleCreateBeaconPanel} type={"Beacon"}/>}
+        {createBeaconPanel && <CreatePanel onToggleCreatePanel={ToggleCreateBeaconPanel} type={"Beacon"}/>}
         {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
         <table className='assign-table'>
@@ -126,17 +126,17 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 
         <button className='assign-button' onClick={ToggleCreateScannerPanel}>Add a Scanner</button>
 
-        {createScannerPanel && <AssignPanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
+        {createScannerPanel && <CreatePanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
         {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
 
-        <p class="instructions">To edit or remove a Beacon or Scanner:</p>
-        <p class="instructions">Click anywhere on it's table entry </p>
+        <p className="instructions">To edit or remove a Beacon or Scanner:</p>
+        <p className="instructions">Click anywhere on it's table entry </p>
       </div>
     </div>
   );
 }
 
-function AssignPanel({ onToggleCreatePanel, type }) {
+function CreatePanel({ onToggleCreatePanel, type }) {
   const [IDvalue, setIDValue] = useState('');
   const [AddressValue, setAddressValue] = useState('');
 
@@ -189,7 +189,6 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
   const handleSubmit = () => {
     (type === "Beacon") && Meteor.call('PostBeaconName', ID, inputValue);
     (type === "Scanner") && Meteor.call('PostScannerLocation', ID, inputValue);
-    
     onToggleEditPanel();
   };
 
@@ -297,8 +296,6 @@ function NameHistory({ beaconData }) {
   );
 }
 
-
-
 export const App = () => {
 
   const beaconNames = useTracker(() => beaconNameCollection.find({}, { sort: { time: -1 } }).fetch());
@@ -311,7 +308,6 @@ export const App = () => {
     currentBeacons = currentBeaconsColl[0].beacons
   }
 
-  
   const [currentScanners, setCurrentScanners] = useState([]);
   
   const fetchScanners = async () => {
