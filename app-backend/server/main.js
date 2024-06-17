@@ -27,7 +27,7 @@ WebApp.connectHandlers.use('/config-update', (req, res, next) => {
 
 Meteor.methods({
 
-  'PostName'(ID, newName) { // change name in database
+  'PostBeaconName'(ID, newName) { // change name in database
     const timestamp = new Date();
 
     currentBeaconCollection.updateAsync(
@@ -64,9 +64,22 @@ Meteor.methods({
       ) // update Name collection if new name or just timestamp
     }
 
-    
+  
+  },
 
-    b
+  'PostScannerLocation'(address, newLocation) { // change name in database
+
+
+    ScannerCollection.updateAsync(
+      { 'scanners.address': address },
+      { $set: { 'scanners.$.location': newLocation } }
+    ); // change name in CurrentScanners
+
+    ConfigCollection.updateAsync(
+      { 'scanners.address': address },
+      { $set: { 'scanners.$.location': newLocation } }
+    ); // change name in Config
+
   },
 
   'AddBeacon'(ID, address) {
@@ -91,6 +104,26 @@ Meteor.methods({
       { $push: { beacons: newBeaconConfig } })
   },
 
+  'AddScanner'(location, address) {
+    const newScanner = {
+      location,
+      address,
+      lastUpdate: new Date()
+    }
+    const newScannerConfig = {
+      location,
+      address
+    }
+    ScannerCollection.updateAsync(
+      {},
+      { $push: { scanners: newScanner}}
+    );
+    ConfigCollection.updateAsync(
+      {},
+      { $push: {scanners: newScannerConfig}}
+    )
+  },
+
   'RemoveBeacon'(removeID) {
     currentBeaconCollection.updateAsync(
       {},
@@ -100,5 +133,16 @@ Meteor.methods({
       {},
       { $pull: { beacons: { ID: removeID } } }
     );
+  },
+
+  'RemoveScanner'(address) {
+    ScannerCollection.updateAsync(
+      {},
+      { $pull: {scanners: {address: address}}}
+    );
+    ConfigCollection.updateAsync(
+      {},
+      { $pull: {scanners: {address: address}}}
+    )
   }
 })

@@ -11,7 +11,7 @@ import ms from 'ms'
 function HomePage({ }) {
   return (
     <div className='welcome-page'>
-      <MainNav />
+      <MainNav currentPage={"Home"}/>
       <div>
         <h1 className='welcome-text'>Welcome to Patient Tracker</h1>
         <h2 className='welcome-text'>Here you can assign patient IDs, track patients, and view location history</h2>
@@ -20,29 +20,53 @@ function HomePage({ }) {
   )
 }
 
-function AssignBeacons({ currentBeacons, currentScanners }) {
-  const [createPanel, setCreatePanel] = useState(false);
-  const [editPanel, setEditPanel] = useState(false);
-  const [editName, setName] = useState("");
-  const [editID, setID] = useState("");
+function BeaconOverview({ currentBeacons, currentScanners }) {
+  const [createBeaconPanel, setCreateBeaconPanel] = useState(false);
+  const [editBeaconPanel, setEditBeaconPanel] = useState(false);
+  const [editBeaconName, setBeaconName] = useState("");
+  const [editBeaconID, setBeaconID] = useState("");
 
-  const ToggleCreatePanel = () => {
-    setCreatePanel(!createPanel);
+  const ToggleCreateBeaconPanel = () => {
+    setCreateBeaconPanel(!createBeaconPanel);
   };
-  const ToggleEditPanel = () => {
-    setEditPanel(!editPanel);
+  const ToggleEditBeaconPanel = () => {
+    setEditBeaconPanel(!editBeaconPanel);
   };
-  const setEditName = (name) => {
-    setName(name);
+  const setEditBeaconName = (name) => {
+    setBeaconName(name);
   }
-  const setEditID = (ID) => {
-    setID(ID);
+  const setEditBeaconID = (ID) => {
+    setBeaconID(ID);
   }
 
-  const ShowEditPanel = (name, ID) => {
-    setEditName(name);
-    setEditID(ID);
-    ToggleEditPanel();
+  const ShowEditBeaconPanel = (name, ID) => {
+    setEditBeaconName(name);
+    setEditBeaconID(ID);
+    ToggleEditBeaconPanel();
+  }
+
+  const [createScannerPanel, setCreateScannerPanel] = useState(false);
+  const [editScannerPanel, setEditScannerPanel] = useState(false);
+  const [editScannerName, setScannerName] = useState("");
+  const [editScannerAddress, setScannerAddress] = useState("");
+
+  const ToggleCreateScannerPanel = () => {
+    setCreateScannerPanel(!createScannerPanel);
+  };
+  const ToggleEditScannerPanel = () => {
+    setEditScannerPanel(!editScannerPanel);
+  };
+  const setEditScannerName = (name) => {
+    setScannerName(name);
+  }
+  const setEditScannerAddress = (address) => {
+    setScannerAddress(address);
+  }
+
+  const ShowEditScannerPanel = (name, address) => {
+    setEditScannerName(name);
+    setEditScannerAddress(address);
+    ToggleEditScannerPanel();
   }
 
   const beaconHeader = ["Patient Name", "Beacon ID", "MAC Address", "Location"];
@@ -50,7 +74,7 @@ function AssignBeacons({ currentBeacons, currentScanners }) {
 
   return (
     <div className='assign-container'>
-      <MainNav />
+      <MainNav currentPage={"Beacon Overview"}/>
       <div className='table-container'>
         <table className='assign-table'>
           <thead>
@@ -64,19 +88,19 @@ function AssignBeacons({ currentBeacons, currentScanners }) {
             {currentBeacons.map((beacon, index) => (
 
               <tr key={index}>
-                <td onClick={() => { ShowEditPanel(beacon.name, beacon.ID) }}>{beacon.name}</td>
-                <td>{beacon.ID}</td>
-                <td>{beacon.address}</td>
-                <td>{beacon.location}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.name}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.ID}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.address}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.location}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <button className='assign-button' onClick={ToggleCreatePanel}>Add a Beacon</button>
+        <button className='assign-button' onClick={ToggleCreateBeaconPanel}>Add a Beacon</button>
 
-        {createPanel && <AssignPanel onToggleCreatePanel={ToggleCreatePanel} />}
-        {editPanel && <EditPanel name={editName} ID={editID} onToggleEditPanel={ToggleEditPanel} />}
+        {createBeaconPanel && <AssignPanel onToggleCreatePanel={ToggleCreateBeaconPanel} type={"Beacon"}/>}
+        {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
         <table className='assign-table'>
           <thead>
@@ -91,52 +115,62 @@ function AssignBeacons({ currentBeacons, currentScanners }) {
 
               return (
                 <tr key={index}>
-                  <td>{scanner.location}</td>
-                  <td>{scanner.address}</td>
-                  <td>{scanner.status}</td>
+                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.location}</td>
+                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.address}</td>
+                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.status}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
 
+        <button className='assign-button' onClick={ToggleCreateScannerPanel}>Add a Scanner</button>
+
+        {createScannerPanel && <AssignPanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
+        {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
+
+        <p class="instructions">To edit or remove a Beacon or Scanner:</p>
+        <p class="instructions">Click anywhere on it's table entry </p>
       </div>
     </div>
   );
 }
 
-function AssignPanel({ onToggleCreatePanel }) {
+function AssignPanel({ onToggleCreatePanel, type }) {
   const [IDvalue, setIDValue] = useState('');
-  const [AdressValue, setAdressValue] = useState('');
+  const [AddressValue, setAddressValue] = useState('');
+
+  //ID Value is location if scanner, ID num if beacon
 
   const HandleIDChange = (event) => {
     setIDValue(event.target.value);
   };
 
-  const HandleAdressChange = (event) => {
-    setAdressValue(event.target.value);
+  const HandleAddressChange = (event) => {
+    setAddressValue(event.target.value);
   };
 
   const HandleSubmit = () => {
-    Meteor.call('AddBeacon', IDvalue, AdressValue);
+    (type === "Beacon") && Meteor.call('AddBeacon', IDvalue, AddressValue);
+    (type === "Scanner") && Meteor.call('AddScanner', IDvalue, AddressValue);
     onToggleCreatePanel();
   }
 
   return (
     <div className='assign-panel'>
       <button className='x-button' onClick={onToggleCreatePanel}>X</button>
-      <p>Create Beacon:</p>
-      <p>Beacon ID:</p>
+      <p>{`Create ${type}:`}</p>
+      <p>{`${type} ${type === "Beacon" ? "ID" : "Location"}:`}</p>
       <input
         type="text"
         value={IDvalue}
         onChange={HandleIDChange}
       />
-      <p>Beacon Address:</p>
+      <p>{`${type} Address:`}</p>
       <input
         type="text"
-        value={AdressValue}
-        onChange={HandleAdressChange}
+        value={AddressValue}
+        onChange={HandleAddressChange}
       />
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
 
@@ -144,7 +178,8 @@ function AssignPanel({ onToggleCreatePanel }) {
   )
 }
 
-function EditPanel({ name, ID, onToggleEditPanel }) {
+function EditPanel({ name, ID, onToggleEditPanel, type }) {
+  // ID is MAC address if scanner, ID number if Beacon
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (event) => {
@@ -152,17 +187,21 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
   };
 
   const handleSubmit = () => {
-    Meteor.call('PostName', ID, inputValue);
+    (type === "Beacon") && Meteor.call('PostBeaconName', ID, inputValue);
+    (type === "Scanner") && Meteor.call('PostScannerLocation', ID, inputValue);
+    
     onToggleEditPanel();
   };
 
   const handleUnassign = () => {
-    Meteor.call('PostName', ID, "-");
+    (type === "Beacon") && Meteor.call('PostBeaconName', ID, "-");
+    (type === "Scanner") && Meteor.call('PostScannerLocation', ID, "-");
     onToggleEditPanel();
   };
 
   const HandleRemove = () => {
-    Meteor.call('RemoveBeacon', ID);
+    (type === "Beacon") && Meteor.call('RemoveBeacon', ID);
+    (type === "Scanner") && Meteor.call('RemoveScanner', ID);
     onToggleEditPanel();
   }
 
@@ -170,7 +209,7 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
     <div className='edit-panel'>
       <button className='x-button' onClick={onToggleEditPanel}>X</button>
       <div className='inner-edit-panel'>
-        <p>Edit Beacon: {name} {ID}</p>
+        <p>{`Edit ${type}: ${name}`}</p>
         <p>Change name to:</p>
         <input
           type="text"
@@ -185,13 +224,16 @@ function EditPanel({ name, ID, onToggleEditPanel }) {
   );
 }
 
-function MainNav({ }) {
+function MainNav({ currentPage }) {
   return (
     <nav className='main-nav-bar'>
       <ul className='main-nav-list'>
-        <li className='main-nav-item'><Link to="/">Home</Link></li>
-        <li className='main-nav-item'><Link to="/assign-beacons">Assign Beacons</Link></li>
-        <li className='main-nav-item'><Link to="/beacon-history">Beacon History</Link></li>
+        <li className={`main-nav-item ${currentPage === "Home" ? "active-nav-item" : ""}`}>
+          <Link to="/">Home</Link></li>
+        <li className={`main-nav-item ${currentPage === "Beacon Overview" ? "active-nav-item" : ""}`}>
+          <Link to="/beacon-overview">Beacon Overview</Link></li>
+        <li className={`main-nav-item ${currentPage === "Beacon History" ? "active-nav-item" : ""}`}>
+          <Link to="/beacon-history">Beacon History</Link></li>
       </ul>
     </nav>
   )
@@ -204,7 +246,7 @@ function BeaconHistory({ nameHistory }) {
   const header = ["Patient", "Last Update"]
   return (
     <div className='solo-beacon-data'>
-      <MainNav />
+      <MainNav currentPage={"Beacon History"}/>
       <table className='solo-table'>
         <thead>
           <tr>
@@ -292,8 +334,8 @@ export const App = () => {
       <div>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/assign-beacons" element={
-            <AssignBeacons currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
+          <Route path="/beacon-overview" element={
+            <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
           <Route path="/beacon-history" element={<BeaconHistory nameHistory={beaconNames} />} />
           <Route path="/history/:name" element={<NameHistory beaconData={beaconLocations} />} />
         </Routes>
