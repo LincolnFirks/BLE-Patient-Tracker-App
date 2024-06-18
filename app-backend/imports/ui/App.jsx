@@ -166,12 +166,14 @@ function CreatePanel({ onToggleCreatePanel, type }) {
         value={IDvalue}
         onChange={HandleIDChange}
       />
-      <p>{`${type} Address:`}</p>
+      <p>{`MAC Address:`}</p>
       <input
         type="text"
         value={AddressValue}
         onChange={HandleAddressChange}
       />
+      <p className='edit-help'>{`Enter MAC address with all letters undercase separated by colons`}</p>
+      <p className='edit-help'>{`Example: a1:b2:c3:d4:e5`}</p>
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
 
     </div>
@@ -217,8 +219,9 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
         />
       </div>
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
-      <button className='remove-button' onClick={HandleRemove} >Remove Beacon</button>
-      <button className='unassign-button' onClick={handleUnassign} >Unassign Patient</button>
+      <button className='remove-button' onClick={HandleRemove} >{`Remove ${type}`}</button>
+      <button className='unassign-button' onClick={handleUnassign} >
+        {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}</button>
     </div>
   );
 }

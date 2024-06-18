@@ -30,7 +30,7 @@ function BeaconSim(length) {
 
 }
 
-BeaconSim(100000);
+BeaconSim(1000000);
 
 
 function randomIndex(length) {
