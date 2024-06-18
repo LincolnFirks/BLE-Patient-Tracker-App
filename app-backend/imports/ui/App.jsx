@@ -139,6 +139,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 function CreatePanel({ onToggleCreatePanel, type }) {
   const [IDvalue, setIDValue] = useState('');
   const [AddressValue, setAddressValue] = useState('');
+  const [ErrorPanelState, setErrorPanel] = useState(false);
 
   //ID Value is location if scanner, ID num if beacon
 
@@ -150,12 +151,39 @@ function CreatePanel({ onToggleCreatePanel, type }) {
     setAddressValue(event.target.value);
   };
 
-  const HandleSubmit = () => {
-    (type === "Beacon") && Meteor.call('AddBeacon', IDvalue, AddressValue);
-    (type === "Scanner") && Meteor.call('AddScanner', IDvalue, AddressValue);
-    onToggleCreatePanel();
+  const ToggleErrorPanel = () => {
+    setErrorPanel(!ErrorPanelState);
   }
 
+  const HandleSubmit = async () => {
+    let result;
+    if (type === "Beacon") {
+        result = await new Promise((resolve, reject) => {
+            Meteor.call('AddBeacon', IDvalue, AddressValue, (error, response) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    } else if (type === "Scanner") {
+        result = await new Promise((resolve, reject) => {
+            Meteor.call('AddScanner', IDvalue, AddressValue, (error, response) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    }
+    
+    if (result) {
+      console.log("Hello")
+      ToggleErrorPanel();
+    }
+  };
   return (
     <div className='assign-panel'>
       <button className='x-button' onClick={onToggleCreatePanel}>X</button>
@@ -176,7 +204,13 @@ function CreatePanel({ onToggleCreatePanel, type }) {
       <p className='edit-help'>{`Example: a1:b2:c3:d4:e5`}</p>
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
 
+      {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel}/>}
+      
+
     </div>
+
+    
+
   )
 }
 
@@ -225,6 +259,18 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
     </div>
   );
 }
+
+function ErrorPanel({TogglePanel}) {
+  return (
+    <div className='error-panel'>
+      <button className='x-button' onClick={TogglePanel}>X</button>
+      <p>Error</p>
+      
+    </div>
+  )
+}
+
+
 
 function MainNav({ currentPage }) {
   return (

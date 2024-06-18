@@ -107,7 +107,7 @@ body {
   
 }
 
-.assign-panel, .edit-panel {
+.assign-panel, .edit-panel, .error-panel {
   width: 50%;
   height: 70%;
   background-color: rgb(213, 213, 213);
@@ -120,6 +120,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.error-panel {
+  background-color: rgb(255, 194, 194);
 }
 
 .inner-edit-panel {

@@ -82,13 +82,24 @@ Meteor.methods({
 
   },
 
-  'AddBeacon'(ID, address) {
+  async 'AddBeacon'(ID, address) {
+    let result = await currentBeaconCollection.findOneAsync(
+      { $or: [
+        { "beacons.address": address },
+        { "beacons.ID": ID }
+      ]}
+    )
+    
+    if (result) {
+      console.log("hello")
+      return true;
+    }
     const newBeacon = {
       ID,
       name: "-",
       address,
       location: "-"
-    } // entry for curretnBeacons
+    } // entry for currentBeacons
     const newBeaconConfig = {
       ID,
       name: "-",
