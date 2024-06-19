@@ -2,8 +2,6 @@
 
 This is a project I completed as a part of my time as a Development Intern at Medical Informatics Engineering
 
-[Video Showcase of Web Application Functionality](https://www.youtube.com/watch?v=ptAHHDK9i3M)
-
 ## The Problem
 
 Currently, healthcare workers have to manually update location of patients in a EHR (Electronic Health System). The implementation of EHR's have led to more human–computer interaction, which in some cases can take excessive time. The more time that is spent interacting with an EHR interface causes less efficient healthcare.

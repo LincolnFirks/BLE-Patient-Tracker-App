@@ -140,6 +140,7 @@ function CreatePanel({ onToggleCreatePanel, type }) {
   const [IDvalue, setIDValue] = useState('');
   const [AddressValue, setAddressValue] = useState('');
   const [ErrorPanelState, setErrorPanel] = useState(false);
+  const [ErrorMessage, setErrorMessage] = useState('');
 
   //ID Value is location if scanner, ID num if beacon
 
@@ -155,35 +156,32 @@ function CreatePanel({ onToggleCreatePanel, type }) {
     setErrorPanel(!ErrorPanelState);
   }
 
+  const ChangeError = (message) => {
+    setErrorMessage(message);
+  }
+
   const HandleSubmit = async () => {
     let result;
-    if (type === "Beacon") {
-        result = await new Promise((resolve, reject) => {
-            Meteor.call('AddBeacon', IDvalue, AddressValue, (error, response) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(response);
-                }
-            });
+    let method = `Add${type}`
+    
+    result = await new Promise((resolve, reject) => {
+        Meteor.call(method, IDvalue, AddressValue, (error, response) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(response);
+            }
         });
-    } else if (type === "Scanner") {
-        result = await new Promise((resolve, reject) => {
-            Meteor.call('AddScanner', IDvalue, AddressValue, (error, response) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(response);
-                }
-            });
-        });
-    }
+    });
     
     if (result) {
-      console.log("Hello")
+      ChangeError(`A ${type} with that MAC Address or ${(type === "Beacon") ? `ID` : `Location Name`} already exists`);
       ToggleErrorPanel();
+    } else {
+      onToggleCreatePanel();
     }
   };
+
   return (
     <div className='assign-panel'>
       <button className='x-button' onClick={onToggleCreatePanel}>X</button>
@@ -204,7 +202,7 @@ function CreatePanel({ onToggleCreatePanel, type }) {
       <p className='edit-help'>{`Example: a1:b2:c3:d4:e5`}</p>
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
 
-      {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel}/>}
+      {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
       
 
     </div>
@@ -260,11 +258,12 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
   );
 }
 
-function ErrorPanel({TogglePanel}) {
+function ErrorPanel({TogglePanel, message}) {
   return (
     <div className='error-panel'>
       <button className='x-button' onClick={TogglePanel}>X</button>
       <p>Error</p>
+      <p>{message}</p>
       
     </div>
   )

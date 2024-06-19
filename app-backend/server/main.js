@@ -91,7 +91,6 @@ Meteor.methods({
     )
     
     if (result) {
-      console.log("hello")
       return true;
     }
     const newBeacon = {
@@ -115,7 +114,19 @@ Meteor.methods({
       { $push: { beacons: newBeaconConfig } })
   },
 
-  'AddScanner'(location, address) {
+  async 'AddScanner'(location, address) {
+
+    let result = await ScannerCollection.findOneAsync(
+      { $or: [
+        { "scanners.address": address },
+        { "scanners.location": location }
+      ]}
+    )
+    
+    if (result) {
+      return true;
+    }
+
     const newScanner = {
       location,
       address,
