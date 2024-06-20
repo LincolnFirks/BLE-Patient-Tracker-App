@@ -27,7 +27,15 @@ WebApp.connectHandlers.use('/config-update', (req, res, next) => {
 
 Meteor.methods({
 
-  'PostBeaconName'(ID, newName) { // change name in database
+  async 'PostBeaconName'(ID, newName) { // change name in database
+    let result = await currentBeaconCollection.findOneAsync(
+      { "beacons.name": newName }
+    );
+    
+    if (result) {
+      return true;
+    }
+
     const timestamp = new Date();
 
     currentBeaconCollection.updateAsync(
@@ -67,7 +75,15 @@ Meteor.methods({
   
   },
 
-  'PostScannerLocation'(address, newLocation) { // change name in database
+  async 'PostScannerLocation'(address, newLocation) { // change name in database
+
+    let result = await ScannerCollection.findOneAsync(
+      { "scanners.location": newLocation }
+    );
+    
+    if (result) {
+      return true;
+    }
 
 
     ScannerCollection.updateAsync(
@@ -166,5 +182,23 @@ Meteor.methods({
       {},
       { $pull: {scanners: {address: address}}}
     )
+  },
+
+  'IsMAC'(address) {
+    if (address.length !== 17) return false;
+
+    for (let i = 0; i < address.length; i++) {
+      if ((i+1) % 3 === 0) {
+        if (address[i] !== ":") {
+          return false;
+        }
+      } else if (isNaN(address[i]) && !(/[a-z]/.test(address[i]))) {
+          return false;
+      }
+      
+    }
+    return true;
+      
   }
+  
 })

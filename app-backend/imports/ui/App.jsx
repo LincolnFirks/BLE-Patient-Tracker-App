@@ -161,25 +161,44 @@ function CreatePanel({ onToggleCreatePanel, type }) {
   }
 
   const HandleSubmit = async () => {
-    let result;
-    let method = `Add${type}`
-    
-    result = await new Promise((resolve, reject) => {
-        Meteor.call(method, IDvalue, AddressValue, (error, response) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(response);
-            }
-        });
+
+    const isMAC = await new Promise((resolve, reject) => {
+      Meteor.call('IsMAC', AddressValue, (error, response) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(response);
+          }
+      });
     });
-    
-    if (result) {
-      ChangeError(`A ${type} with that MAC Address or ${(type === "Beacon") ? `ID` : `Location Name`} already exists`);
-      ToggleErrorPanel();
+
+    if (isMAC) {
+      let result;
+      
+      let method = `Add${type}`
+      
+      result = await new Promise((resolve, reject) => {
+          Meteor.call(method, IDvalue, AddressValue, (error, response) => {
+              if (error) {
+                  reject(error);
+              } else {
+                  resolve(response);
+              }
+          });
+      });
+      
+      if (result) {
+        ChangeError(`A ${type} with that MAC Address or ${(type === "Beacon") ? `ID` : `Location Name`} already exists`);
+        ToggleErrorPanel();
+      } else {
+        onToggleCreatePanel();
+      }
     } else {
-      onToggleCreatePanel();
+      ChangeError(`Not a valid MAC address`);
+      ToggleErrorPanel();
     }
+
+    
   };
 
   return (
@@ -199,7 +218,7 @@ function CreatePanel({ onToggleCreatePanel, type }) {
         onChange={HandleAddressChange}
       />
       <p className='edit-help'>{`Enter MAC address with all letters undercase separated by colons`}</p>
-      <p className='edit-help'>{`Example: a1:b2:c3:d4:e5`}</p>
+      <p className='edit-help'>{`Example: a1:b2:c3:d4:e5:f6`}</p>
       <button className='submit-button' onClick={HandleSubmit}>Submit</button>
 
       {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
@@ -215,26 +234,55 @@ function CreatePanel({ onToggleCreatePanel, type }) {
 function EditPanel({ name, ID, onToggleEditPanel, type }) {
   // ID is MAC address if scanner, ID number if Beacon
   const [inputValue, setInputValue] = useState('');
+  const [ErrorMessage, setErrorMessage] = useState('');
+  const [ErrorPanelState, setErrorPanel] = useState(false);
+
+  const ToggleErrorPanel = () => {
+    setErrorPanel(!ErrorPanelState);
+  }
+
+  const ChangeError = (message) => {
+    setErrorMessage(message);
+  }
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
 
-  const handleSubmit = () => {
-    (type === "Beacon") && Meteor.call('PostBeaconName', ID, inputValue);
-    (type === "Scanner") && Meteor.call('PostScannerLocation', ID, inputValue);
-    onToggleEditPanel();
+  const handleSubmit = async () => {
+    let result;
+    let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
+
+    result = await new Promise((resolve, reject) => {
+      Meteor.call(method, ID, inputValue, (error, response) => {
+          if (error) {
+              reject(error);
+          } else {
+              resolve(response);
+          }
+      });
+    });
+
+    if (result) {
+      ChangeError(`There already exists a ${type} with that ${(type === "Beacon") ? "name" : "location"}`);
+      ToggleErrorPanel();
+    } else {
+      onToggleEditPanel();
+    }
+
   };
 
   const handleUnassign = () => {
-    (type === "Beacon") && Meteor.call('PostBeaconName', ID, "-");
-    (type === "Scanner") && Meteor.call('PostScannerLocation', ID, "-");
+    let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
+    Meteor.call(method, ID, "-");
+
     onToggleEditPanel();
   };
 
   const HandleRemove = () => {
-    (type === "Beacon") && Meteor.call('RemoveBeacon', ID);
-    (type === "Scanner") && Meteor.call('RemoveScanner', ID);
+    let method = `Remove${type}`
+    Meteor.call(method, ID);
+    
     onToggleEditPanel();
   }
 
@@ -253,7 +301,10 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
       <button className='remove-button' onClick={HandleRemove} >{`Remove ${type}`}</button>
       <button className='unassign-button' onClick={handleUnassign} >
-        {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}</button>
+        {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}
+      </button>
+
+      {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
     </div>
   );
 }
