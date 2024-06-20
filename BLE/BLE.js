@@ -1,4 +1,4 @@
-const BeaconScanner = require('node-beacon-scanner');
+const BeaconScanner = require('@ansgomez/node-beacon-scanner');
 const { update, client } = require("./update");
 const { checkDB } = require("./update-config");
 const fs = require("fs");
