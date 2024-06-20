@@ -15,13 +15,58 @@ Meteor.publish('data', () => {
 
 WebApp.connectHandlers.use(bodyParser.json());
 
-WebApp.connectHandlers.use('/config-update', (req, res, next) => {
+WebApp.connectHandlers.use('/config-update', async (req, res, next) => {
   if (req.method === 'POST') {
+
+    const config = await ConfigCollection.findOneAsync();
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(config));
+
     ScannerCollection.updateAsync(
       { 'scanners.address': req.body.address },
       { $set: { 'scanners.$.lastUpdate': new Date() } }
     )
-    console.log(req.body)
+    
+  }
+}); // recieve notifcation from device that config was updated.
+
+WebApp.connectHandlers.use('/entry', (req, res, next) => {
+  if (req.method === 'POST') {
+    const entry = req.body;
+
+    beaconLocationCollection.insertAsync(entry);
+
+    currentBeaconCollection.updateAsync(
+      { "beacons.ID": entry.beaconID },
+      { $set: { "beacons.$.location": entry.location } }
+    ); // update current beacons with location
+
+    const checkName = beaconNameCollection.findOneAsync({name: entry.name});
+    if (!checkName) {
+      beaconNameCollection.insertAsync({ name : entry.name, time: entry.time});
+    } else {
+      beaconNameCollection.updateAsync({_id: checkName._id}, {$set: {time: entry.time}})
+    }
+
+  }
+}); 
+
+WebApp.connectHandlers.use('/initialize', (req, res, next) => {
+  if (req.method === 'POST') {
+    const config = req.body;
+    ConfigCollection.removeAsync({});
+    ConfigCollection.insertAsync(config);
+    currentBeaconCollection.removeAsync({});
+    currentBeaconCollection.insertAsync({
+      beacons: config.beacons.map(beacon => ({...beacon, location: "-" }))
+    });
+    ScannerCollection.removeAsync({});
+    ScannerCollection.insertAsync({
+      scanners: config.scanners.map(scanner => ({...scanner, lastUpdate: new Date() }))
+    });
+    res.end();
+    
   }
 }); // recieve notifcation from device that config was updated.
 

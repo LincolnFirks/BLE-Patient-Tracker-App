@@ -1,9 +1,10 @@
 const BeaconScanner = require('@ansgomez/node-beacon-scanner');
-const { update, client } = require("./update");
+const { update } = require("./update");
 const { checkDB } = require("./update-config");
 const fs = require("fs");
 const getMAC = require("getmac").default;
 const distanceReadings = {};
+
 
 const scanner = new BeaconScanner();
 
@@ -16,7 +17,7 @@ scanner.onadvertisement = (ad) => {
 async function HandleAd(ad, time) {
   const config = JSON.parse(fs.readFileSync('./config.json')); // get updated config
   
-  let beaconData = config.beacons
+  let beaconData = config.beacons;
   let beaconIDs = new Set(beaconData.map(beacon => beacon.ID)); // create set of all IDs.
 
   beaconData.forEach(beacon => { 
