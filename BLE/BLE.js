@@ -64,10 +64,6 @@ async function initiateScan() {
     distanceReadings[beacon.ID] = [];
   })
 
-  await client.connect();
-  // Send a ping to confirm a successful connection
-  await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
   scanner.startScan().then(() => {
     console.log('Started scanning...');
   }).catch((error) => {
