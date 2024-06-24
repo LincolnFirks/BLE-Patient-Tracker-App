@@ -354,7 +354,7 @@ function BeaconHistory({ nameHistory }) {
         <tbody>
           {nameHistory.map((doc, index) => (
 
-            <tr key={index}>
+            <tr key={doc._id}>
               <td><Link to={`/history/${doc.name}`} className='name-link'>{doc.name}</Link></td>
               <td>{formatDateAndTime(doc.time)}</td>
             </tr>

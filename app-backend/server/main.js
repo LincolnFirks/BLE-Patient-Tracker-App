@@ -31,41 +31,54 @@ WebApp.connectHandlers.use('/config-update', async (req, res, next) => {
   }
 }); // recieve notifcation from device that config was updated.
 
-WebApp.connectHandlers.use('/entry', (req, res, next) => {
+WebApp.connectHandlers.use('/entry', async (req, res, next) => {
   if (req.method === 'POST') {
     const entry = req.body;
 
-    beaconLocationCollection.insertAsync(entry);
+    const lastEntry = await beaconLocationCollection.findOneAsync(
+      { beaconID: entry.beaconID },
+      { sort: {time: -1} }
+    )
+
+    if (lastEntry) {
+      if (lastEntry.location === entry.location) {
+        console.log("duplicate entry");
+        return;
+      }
+    } //  if location is same as last one, don't make entry.
+
+    beaconLocationCollection.insertAsync({ ...entry, time: new Date(entry.time)});
 
     currentBeaconCollection.updateAsync(
       { "beacons.ID": entry.beaconID },
       { $set: { "beacons.$.location": entry.location } }
     ); // update current beacons with location
 
-    const checkName = beaconNameCollection.findOneAsync({name: entry.name});
+    const checkName = await beaconNameCollection.findOneAsync({name: entry.name});
     if (!checkName) {
-      beaconNameCollection.insertAsync({ name : entry.name, time: entry.time});
+      beaconNameCollection.insertAsync({ name : entry.name, time: new Date(entry.time)});
     } else {
-      beaconNameCollection.updateAsync({_id: checkName._id}, {$set: {time: entry.time}})
+      beaconNameCollection.updateAsync({_id: checkName._id}, {$set: {time: new Date(entry.time)}})
     }
 
   }
 }); 
 
-WebApp.connectHandlers.use('/initialize', (req, res, next) => {
+WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
   if (req.method === 'POST') {
     const config = req.body;
-    ConfigCollection.removeAsync({});
+    await ConfigCollection.removeAsync({});
     ConfigCollection.insertAsync(config);
-    currentBeaconCollection.removeAsync({});
+    await currentBeaconCollection.removeAsync({});
     currentBeaconCollection.insertAsync({
       beacons: config.beacons.map(beacon => ({...beacon, location: "-" }))
     });
-    ScannerCollection.removeAsync({});
+    await ScannerCollection.removeAsync({});
     ScannerCollection.insertAsync({
       scanners: config.scanners.map(scanner => ({...scanner, lastUpdate: new Date() }))
     });
     res.end();
+    console.log("Database initialized.")
     
   }
 }); // recieve notifcation from device that config was updated.
