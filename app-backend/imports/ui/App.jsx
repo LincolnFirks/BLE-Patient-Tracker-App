@@ -69,7 +69,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
     ToggleEditScannerPanel();
   }
 
-  const beaconHeader = ["Patient Name", "Beacon ID", "MAC Address", "Location"];
+  const beaconHeader = ["Patient Name", "Patient ID", "Beacon ID", "MAC Address", "Location"];
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
@@ -88,10 +88,11 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
             {currentBeacons.map((beacon, index) => (
 
               <tr key={index}>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.name}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.ID}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.address}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.name, beacon.ID) }}>{beacon.location}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.patient.name}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.patient.ID}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.ID}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.address}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.location}</td>
               </tr>
             ))}
           </tbody>
@@ -233,7 +234,8 @@ function CreatePanel({ onToggleCreatePanel, type }) {
 
 function EditPanel({ name, ID, onToggleEditPanel, type }) {
   // ID is MAC address if scanner, ID number if Beacon
-  const [inputValue, setInputValue] = useState('');
+  const [nameValue, setNameValue] = useState('');
+  const [IDValue, setIDValue] = useState('');
   const [ErrorMessage, setErrorMessage] = useState('');
   const [ErrorPanelState, setErrorPanel] = useState(false);
 
@@ -245,8 +247,12 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
     setErrorMessage(message);
   }
 
-  const handleInputChange = (event) => {
-    setInputValue(event.target.value);
+  const handleNameChange = (event) => {
+    setNameValue(event.target.value);
+  };
+
+  const handleIDChange = (event) => {
+    setIDValue(event.target.value);
   };
 
   const handleSubmit = async () => {
@@ -254,7 +260,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
     let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
 
     result = await new Promise((resolve, reject) => {
-      Meteor.call(method, ID, inputValue, (error, response) => {
+      Meteor.call(method, ID, nameValue, IDValue, (error, response) => {
           if (error) {
               reject(error);
           } else {
@@ -264,7 +270,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
     });
 
     if (result) {
-      ChangeError(`There already exists a ${type} with that ${(type === "Beacon") ? "name" : "location"}`);
+      ChangeError(`There already exists a ${type} with that ${(type === "Beacon") ? "name or that ID is already in use" : "location"}`);
       ToggleErrorPanel();
     } else {
       onToggleEditPanel();
@@ -274,7 +280,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
 
   const handleUnassign = () => {
     let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
-    Meteor.call(method, ID, "-");
+    Meteor.call(method, ID, "-", "-");
 
     onToggleEditPanel();
   };
@@ -291,12 +297,23 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
       <button className='x-button' onClick={onToggleEditPanel}>X</button>
       <div className='inner-edit-panel'>
         <p>{`Edit ${type}: ${name}`}</p>
-        <p>Change name to:</p>
+        <p>Set name:</p>
         <input
           type="text"
-          value={inputValue}
-          onChange={handleInputChange}
+          value={nameValue}
+          onChange={handleNameChange}
         />
+        {(type === "Beacon") && ( 
+          <div>
+            <p>Set ID:</p>
+            <input
+              type="text"
+              value={IDValue}
+              onChange={handleIDChange}
+            />
+          </div>
+        )}
+
       </div>
       <button className='submit-button' onClick={handleSubmit}>Submit</button>
       <button className='remove-button' onClick={HandleRemove} >{`Remove ${type}`}</button>
@@ -341,7 +358,7 @@ function MainNav({ currentPage }) {
 
 
 function BeaconHistory({ nameHistory }) {
-  const header = ["Patient", "Last Update"]
+  const header = ["Patient","ID", "Last Update"]
   return (
     <div className='solo-beacon-data'>
       <MainNav currentPage={"Beacon History"}/>
@@ -355,7 +372,8 @@ function BeaconHistory({ nameHistory }) {
           {nameHistory.map((doc, index) => (
 
             <tr key={doc._id}>
-              <td><Link to={`/history/${doc.name}`} className='name-link'>{doc.name}</Link></td>
+              <td><Link to={`/history/${doc.patient.name}/${doc.patient.ID}`} className='name-link'>{`${doc.patient.name}`}</Link></td>
+              <td>{doc.patient.ID}</td>
               <td>{formatDateAndTime(doc.time)}</td>
             </tr>
           ))}
@@ -366,7 +384,7 @@ function BeaconHistory({ nameHistory }) {
 }
 
 function NameHistory({ beaconData }) {
-  const { name } = useParams();
+  const { name, ID } = useParams();
   return (
     <div>
       <MainNav />
@@ -381,7 +399,7 @@ function NameHistory({ beaconData }) {
             </tr>
           </thead>
           <tbody>
-            {beaconData.filter(doc => doc.name === name)
+            {beaconData.filter(doc => doc.patient.ID === ID)
               .map(doc => (
                 <tr key={doc._id}>
                   <td>{doc.location}</td>
@@ -432,7 +450,7 @@ export const App = () => {
           <Route path="/beacon-overview" element={
             <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
           <Route path="/beacon-history" element={<BeaconHistory nameHistory={beaconNames} />} />
-          <Route path="/history/:name" element={<NameHistory beaconData={beaconLocations} />} />
+          <Route path="/history/:name/:ID" element={<NameHistory beaconData={beaconLocations} />} />
         </Routes>
       </div>
     </BrowserRouter>

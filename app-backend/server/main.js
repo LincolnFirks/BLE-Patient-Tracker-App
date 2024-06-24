@@ -54,11 +54,13 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => {
       { $set: { "beacons.$.location": entry.location } }
     ); // update current beacons with location
 
-    const checkName = await beaconNameCollection.findOneAsync({name: entry.name});
-    if (!checkName) {
-      beaconNameCollection.insertAsync({ name : entry.name, time: new Date(entry.time)});
+    const checkPatient = await beaconNameCollection.findOneAsync({"patient.ID": entry.patient.ID});
+    if (!checkPatient) {
+      beaconNameCollection.insertAsync({ patient: entry.patient, time: new Date(entry.time)});
+      console.log("New name entered")
     } else {
-      beaconNameCollection.updateAsync({_id: checkName._id}, {$set: {time: new Date(entry.time)}})
+      beaconNameCollection.updateAsync({_id: checkPatient._id}, {$set: {time: new Date(entry.time)}})
+      console.log("Name updated")
     }
 
   }
@@ -85,25 +87,39 @@ WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
 
 Meteor.methods({
 
-  async 'PostBeaconName'(ID, newName) { // change name in database
+  async 'PostBeaconName'(ID, newName, newID) { // change name in database
     let result = await currentBeaconCollection.findOneAsync(
-      { "beacons.name": newName }
+      { $or: [
+        {"beacons.patient.name": newName },
+        { "beacons.patient.ID": newID}
+      ]}
     );
     
     if (result) {
       return true;
     }
 
+    result = await beaconNameCollection.findOneAsync({ "patient.ID": newID })
+    
+    if ((result) && (result.patient.name !== newName)) {
+      return true;
+    }
+
     const timestamp = new Date();
+
+    const newPatient = {
+      name: newName,
+      ID: newID
+    };
 
     currentBeaconCollection.updateAsync(
       { 'beacons.ID': ID },
-      { $set: { 'beacons.$.name': newName } }
+      { $set: { 'beacons.$.patient': newPatient } }
     ); // change name in CurrentBeacons
 
     ConfigCollection.updateAsync(
       { 'beacons.ID': ID },
-      { $set: { 'beacons.$.name': newName } }
+      { $set: { 'beacons.$.patient': newPatient } }
     ); // change name in Config
 
     if (newName !== "-") {
@@ -115,7 +131,7 @@ Meteor.methods({
         if (doc) {
           beaconLocationCollection.insertAsync({
             beaconID: ID,
-            name: newName,
+            patient: newPatient,
             address: doc.address,
             location: doc.location,
             time: timestamp
@@ -124,7 +140,7 @@ Meteor.methods({
       });
 
       beaconNameCollection.updateAsync(
-        { name: newName },
+        {"patient.ID": newID, "patient.name": newName },
         { $set: { time: timestamp } },
         { upsert: true }
       ) // update Name collection if new name or just timestamp
@@ -167,15 +183,23 @@ Meteor.methods({
     if (result) {
       return true;
     }
+
+  
     const newBeacon = {
       ID,
-      name: "-",
+      patient: {
+        name: "-",
+        ID: "-"
+      },
       address,
       location: "-"
     } // entry for currentBeacons
     const newBeaconConfig = {
       ID,
-      name: "-",
+      patient: {
+        name: "-",
+        ID: "-"
+      },
       address
     } // entry for Config
     currentBeaconCollection.updateAsync(

@@ -20,7 +20,7 @@ function BeaconSim(length) {
     let beaconIndex = randomIndex(beaconData.length);
     let scannerIndex = randomIndex(scannerData.length);
     update(beaconData[beaconIndex], new Date(), scannerData[scannerIndex].location, config);
-    console.log(`${beaconData[beaconIndex].name} #${beaconData[beaconIndex].ID} arrived at ${scannerData[scannerIndex].location}`);
+    console.log(`${beaconData[beaconIndex].patient.name} (Beacon #${beaconData[beaconIndex].ID}) arrived at ${scannerData[scannerIndex].location}`);
   }, 2000)
 
   setTimeout(() => {
