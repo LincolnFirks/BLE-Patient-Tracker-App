@@ -20,7 +20,7 @@ King K, Quarles J, Ravi V, Chowdhury TI, Friday D, Sisson C, Feng Y. The Impact 
 
 ## Design
 
-BLE (Bluetooth Low Energy) beacons send advertisements to recievers, which update the database. The Web Application is created with [Meteor](https://www.meteor.com), a full stack JavaScript framework with built a built in MongoDB database and real-time updates.
+BLE (Bluetooth Low Energy) beacons send advertisements to recievers. The recievers then send the updates to the controller web application, which updates the database. The Web Application is created with [Meteor](https://www.meteor.com), a full stack JavaScript framework with built a built in MongoDB database and real-time updates.
 
 The recievers can be any computer with BLE and networking capabilities (in my case, raspberry pi 4s). These recievers are placed around a healthcare clinic and update the database remotely. 
 
@@ -79,6 +79,6 @@ If you want to set up the program for testing and run a simulation on your devic
 node initialize-database.js
 node beacon-sim.js
 ```
-Note that if you change the ports or server that Meteor runs on, you will need to change "serverURL" and "databaseURL" fields in config.json and run initialize-database.js again.
+Note that if you change the ports or server that Meteor runs on, you will need to change "serverURL" field in config.json and run initialize-database.js again.
 
 In it's current state, it is set up to interact with a Meteor app and database running locally on the machine (on ports 3000 and 3001) for testing purposes.

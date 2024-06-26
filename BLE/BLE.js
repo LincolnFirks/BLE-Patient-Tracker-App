@@ -45,7 +45,7 @@ async function HandleAd(ad, time) {
 
 function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.ID].push(distance); // add distance reading to array
-  if (distanceReadings[beacon.ID].length < 5) return; //  if less than 5, keep collecting
+  if (distanceReadings[beacon.ID].length < 15) return; //  if less than 5, keep collecting
   
   if (average(distanceReadings[beacon.ID]) < 30) { // if average is in range(feet)
     const scanners = config.scanners;
