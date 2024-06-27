@@ -4,7 +4,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import {
   beaconNameCollection, beaconLocationCollection,
   currentBeaconCollection, ScannerCollection
-} from '/imports/api/TasksCollection';
+} from '/imports/api/Collections';
 import { formatDateAndTime } from '/client/main';
 import ms from 'ms'
 

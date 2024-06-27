@@ -72,7 +72,7 @@ async function initiateScan() {
 }
 
 initiateScan();
-checkDB(1000); // check for config updates on interval (milliseconds)
+checkDB(3000); // check for config updates on interval (milliseconds)
 
 
 // take average of array of nums (used for the distance calculations.)

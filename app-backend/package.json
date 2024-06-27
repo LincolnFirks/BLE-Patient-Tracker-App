@@ -1,5 +1,5 @@
 {
-  "name": "simple-todos-react",
+  "name": "BLE-Patient-Tracker-App",
   "private": true,
   "scripts": {
     "start": "meteor run",

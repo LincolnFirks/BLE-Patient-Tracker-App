@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import {
   beaconLocationCollection, beaconNameCollection,
   currentBeaconCollection, ConfigCollection, ScannerCollection
-} from '/imports/api/TasksCollection';
+} from '/imports/api/Collections';
 import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser';
 import { v4 as uuidv4 } from 'uuid';
@@ -56,16 +56,18 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => {
   if (req.method === 'POST') {
     const entry = req.body;
 
-    const lastEntry = await beaconLocationCollection.findOneAsync(
-      { beaconID: entry.beaconID },
-      { sort: {time: -1} }
-    )
+    const lastLocation = await currentBeaconCollection.findOneAsync();
 
-    if (lastEntry) {
-      if (lastEntry.location === entry.location) {
-        console.log("duplicate entry");
-        return;
-      }
+    let duplicate = false;
+
+    if (lastLocation) {
+      duplicate = lastLocation.beacons.find(beacon => beacon.location === entry.location && 
+        beacon.ID === entry.beaconID);
+    }
+
+    if (duplicate) {
+      console.log("duplicate entry");
+      return;
     } //  if location is same as last one, don't make entry.
 
     beaconLocationCollection.insertAsync({ ...entry, time: new Date(entry.time)});
@@ -89,19 +91,26 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => {
 
 WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
   if (req.method === 'POST') {
-    const config = req.body;
-    await ConfigCollection.removeAsync({});
-    ConfigCollection.insertAsync(config);
-    await currentBeaconCollection.removeAsync({});
-    currentBeaconCollection.insertAsync({
-      beacons: config.beacons.map(beacon => ({...beacon, location: "-" }))
-    });
-    await ScannerCollection.removeAsync({});
-    ScannerCollection.insertAsync({
-      scanners: config.scanners.map(scanner => ({...scanner, lastUpdate: new Date() }))
-    });
-    res.end();
-    console.log("Database initialized.")
+    try {
+      const config = req.body;
+      await ConfigCollection.removeAsync({});
+      ConfigCollection.insertAsync(config);
+      await currentBeaconCollection.removeAsync({});
+      currentBeaconCollection.insertAsync({
+        beacons: config.beacons.map(beacon => ({...beacon, location: "-" }))
+      });
+      await ScannerCollection.removeAsync({});
+      ScannerCollection.insertAsync({
+        scanners: config.scanners.map(scanner => ({...scanner, lastUpdate: new Date() }))
+      });
+      console.log("Database successfully initialized.")
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end("Database successfully initialized.");
+    } catch(error) {
+      console.error(error);
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end("Error initializing database, see server for details.");
+    }
     
   }
 }); // recieve notifcation from device that config was updated.

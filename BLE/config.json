@@ -39,12 +39,20 @@
       "address": "c0-fa-ee-0f-db-9d"
     },
     {
-      "ID": "0006",
+      "ID": "0008",
       "patient": {
         "name": "Zane",
         "ID": "5"
       },
-      "address": "bf-ee-8b-75-9e-c0"
+      "address": "xx:xx:xx:xx:xx:xy"
+    },
+    {
+      "ID": "0009",
+      "patient": {
+        "name": "-",
+        "ID": "-"
+      },
+      "address": "xy:11:11:11:11:11"
     }
   ],
   "scanners": [

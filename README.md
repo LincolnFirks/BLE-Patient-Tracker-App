@@ -36,7 +36,15 @@ If you don't have Meteor installed, run the following command:
 ```bash
 npm install -g meteor
 ```
-This project was designed on the release candidate version of Meteor 3.0. To navigate into the Meteor project and get the correct version and install dependencies, run the following commands: 
+
+This project was designed on the release candidate version of Meteor 3.0.
+If you cant get to the depreciated version of node/npm that meteor 2.x requires, run this command to install the release candidate version: 
+
+```bash
+curl https://install.meteor.com/?release=3.0-rc.1 | sh
+```
+
+ To navigate into the Meteor project and get the correct version and install dependencies, run the following commands: 
 
 ```bash
 cd app-backend
