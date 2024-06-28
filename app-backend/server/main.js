@@ -125,13 +125,13 @@ Meteor.methods({
       ]}
     );
     
-    if (result) {
+    if (result && newName !== "-") {
       return true;
     }
 
     result = await beaconNameCollection.findOneAsync({ "patient.ID": newID })
     
-    if ((result) && (result.patient.name !== newName)) {
+    if ((result) && (result.patient.name !== newName) && (newID !== "-")) {
       return true;
     }
 
@@ -185,7 +185,7 @@ Meteor.methods({
       { "scanners.location": newLocation }
     );
     
-    if (result) {
+    if (result && newLocation !== "-") {
       return true;
     }
 
