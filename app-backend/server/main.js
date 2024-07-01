@@ -5,7 +5,6 @@ import {
 } from '/imports/api/Collections';
 import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser';
-import { v4 as uuidv4 } from 'uuid';
 
 
 Meteor.publish('data', () => {
@@ -16,17 +15,9 @@ Meteor.publish('data', () => {
 WebApp.connectHandlers.use(bodyParser.json());
 
 WebApp.connectHandlers.use('/register', (req, res) => {
-  if (req.method === 'GET') {
-    try {
-      const data = {uuid: uuidv4()};
-      res.writeHead(200, {'Content-Type': 'application/json'});
-      res.end(JSON.stringify(data));
-    }
-    catch(error) {
-      console.error(error);
-      res.statusCode = 500;
-      res.end(JSON.stringify({ error: 'Internal Server Error' }));
-    }
+  if (req.method === 'POST') {
+    const data = req.body;
+     
   }
 })
 
