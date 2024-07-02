@@ -14,10 +14,25 @@ Meteor.publish('data', () => {
 
 WebApp.connectHandlers.use(bodyParser.json());
 
-WebApp.connectHandlers.use('/register', (req, res) => {
+WebApp.connectHandlers.use('/register-endpoint', (req, res) => {
   if (req.method === 'POST') {
-    const data = req.body;
-     
+    if (!req.body.endpoint) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({error: "Endpoint is required"}));
+    } else {
+      try {
+        const endpoint = req.body.endpoint;
+        ConfigCollection.updateAsync(
+          {}, { $set: {EHRendpoint: endpoint}}
+        )
+        console.log("Successfully registered endpoint")
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({message: "App recieved endpoint successfully"}));
+      } catch(error) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({error: "Couldn't register endpoint in app configuration"}));
+      }
+    }
   }
 })
 

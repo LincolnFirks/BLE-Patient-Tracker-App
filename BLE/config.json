@@ -1,1 +1,106 @@
-{"_id":"666a0868474150c69eb7ca57","ConfigCollection":"Config","CurrentBeaconsCollection":"CurrentBeacons","CurrentScannersCollection":"CurrentScanners","beaconLocationCollection":"BeaconLocations","beaconNameCollection":"BeaconNames","beacons":[{"ID":"0002","patient":{"name":"Jane","ID":"1"},"address":"f3:cf:3c:d9:2c:bc"},{"ID":"0003","patient":{"name":"Jason","ID":"2"},"address":"eb:ce:2d:6c:93:cd"},{"ID":"0004","patient":{"name":"-","ID":"-"},"address":"d9:39:50:da:1d:13"},{"ID":"0005","patient":{"name":"John","ID":"4"},"address":"c0-fa-ee-0f-db-9d"},{"ID":"0008","patient":{"name":"Zane","ID":"5"},"address":"xx:xx:xx:xx:xx:xy"},{"ID":"0011","patient":{"name":"-","ID":"-"},"address":"aa:aa:aa:aa:aa:aa"},{"ID":"0013","patient":{"name":"Sarah","ID":"22"},"address":"bb:bb:bb:bb:bb:bb"},{"ID":"0022","patient":{"name":"Jane Doe","ID":"21"},"address":"55:55:55:55:55:55"}],"scanners":[{"location":"Receptionist","address":"e6:35:d9:9a:b9:34"},{"location":"Oncology","address":"2a:7d:64:8a:cf:2d"},{"location":"ICU","address":"fc:ae:b9:1a:38:fc"},{"location":"Operating Room","address":"dc:54:d7:82:7b:f1"},{"location":"X-Ray","address":"yy:yy:yy:yy:yy:yy"},{"location":"ER","address":"22:22:22:22:22:22"},{"location":"Check-in","address":"12:12:12:12:12:12"}],"serverURL":"http://localhost:3000/"}
+{
+  "_id": "666a0868474150c69eb7ca57",
+  "ConfigCollection": "Config",
+  "CurrentBeaconsCollection": "CurrentBeacons",
+  "CurrentScannersCollection": "CurrentScanners",
+  "beaconLocationCollection": "BeaconLocations",
+  "beaconNameCollection": "BeaconNames",
+  "EHRendpoint": "",
+  "beacons": [
+    {
+      "ID": "0002",
+      "patient": {
+        "name": "Jane",
+        "ID": "1"
+      },
+      "address": "f3:cf:3c:d9:2c:bc"
+    },
+    {
+      "ID": "0003",
+      "patient": {
+        "name": "Jason",
+        "ID": "2"
+      },
+      "address": "eb:ce:2d:6c:93:cd"
+    },
+    {
+      "ID": "0004",
+      "patient": {
+        "name": "-",
+        "ID": "-"
+      },
+      "address": "d9:39:50:da:1d:13"
+    },
+    {
+      "ID": "0005",
+      "patient": {
+        "name": "John",
+        "ID": "4"
+      },
+      "address": "c0-fa-ee-0f-db-9d"
+    },
+    {
+      "ID": "0008",
+      "patient": {
+        "name": "Zane",
+        "ID": "5"
+      },
+      "address": "xx:xx:xx:xx:xx:xy"
+    },
+    {
+      "ID": "0011",
+      "patient": {
+        "name": "-",
+        "ID": "-"
+      },
+      "address": "aa:aa:aa:aa:aa:aa"
+    },
+    {
+      "ID": "0013",
+      "patient": {
+        "name": "Sarah",
+        "ID": "22"
+      },
+      "address": "bb:bb:bb:bb:bb:bb"
+    },
+    {
+      "ID": "0022",
+      "patient": {
+        "name": "Jane Doe",
+        "ID": "21"
+      },
+      "address": "55:55:55:55:55:55"
+    }
+  ],
+  "scanners": [
+    {
+      "location": "Receptionist",
+      "address": "e6:35:d9:9a:b9:34"
+    },
+    {
+      "location": "Oncology",
+      "address": "2a:7d:64:8a:cf:2d"
+    },
+    {
+      "location": "ICU",
+      "address": "fc:ae:b9:1a:38:fc"
+    },
+    {
+      "location": "Operating Room",
+      "address": "dc:54:d7:82:7b:f1"
+    },
+    {
+      "location": "X-Ray",
+      "address": "yy:yy:yy:yy:yy:yy"
+    },
+    {
+      "location": "ER",
+      "address": "22:22:22:22:22:22"
+    },
+    {
+      "location": "Check-in",
+      "address": "12:12:12:12:12:12"
+    }
+  ],
+  "serverURL": "http://localhost:3000/"
+}
