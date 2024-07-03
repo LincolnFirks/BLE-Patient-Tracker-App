@@ -36,6 +36,31 @@ WebApp.connectHandlers.use('/register-endpoint', (req, res) => {
   }
 })
 
+WebApp.connectHandlers.use('/register-tag', (req, res) => {
+  if (req.method === 'POST') {
+    const postData = req.body;
+    if (!postData.tag || !postData.uuid) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({error: "Incorrect fields entered"}));
+    } else {
+      try {
+        const newEntry = {tag: postData.tag, uuid: postData.uuid, location: "-"}
+        currentBeaconCollection.updateAsync(
+          {}, { $push: {beacons: newEntry} }
+        )
+        ConfigCollection.updateAsync(
+          {}, { $push: {beacons: newEntry}}
+        )
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({message: "App recieved endpoint successfully"}));
+      } catch(err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({error: "Couldn't register tag/uuid in app configuration"}));
+      }
+    }
+  }
+})
+
 
 WebApp.connectHandlers.use('/config-update', async (req, res, next) => {
   if (req.method === 'POST') {
