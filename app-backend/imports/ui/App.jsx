@@ -69,7 +69,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
     ToggleEditScannerPanel();
   }
 
-  const beaconHeader = ["Patient Name", "Patient ID", "Beacon ID", "MAC Address", "Location"];
+  const beaconHeader = ["Tag", "UUID", "Location"];
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
@@ -88,11 +88,10 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
             {currentBeacons.map((beacon, index) => (
 
               <tr key={index}>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.patient.name}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.patient.ID}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.ID}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.address}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.patient.name, beacon.ID) }}>{beacon.location}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.uuid}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
+              
               </tr>
             ))}
           </tbody>

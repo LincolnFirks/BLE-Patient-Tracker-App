@@ -18,20 +18,20 @@ async function HandleAd(ad, time) {
   const config = JSON.parse(fs.readFileSync('./config.json')); // get updated config
   
   let beaconData = config.beacons;
-  let beaconIDs = new Set(beaconData.map(beacon => beacon.ID)); // create set of all IDs.
+  let beaconUUIDs = new Set(beaconData.map(beacon => beacon.uuid)); // create set of all IDs.
 
   beaconData.forEach(beacon => { 
-    if (!distanceReadings[beacon.ID]) {
-      distanceReadings[beacon.ID] = [];
+    if (!distanceReadings[beacon.uuid]) {
+      distanceReadings[beacon.uuid] = [];
     }  // if no distance readings for that beacon yet, create one
   })
   Object.keys(distanceReadings).forEach(key => {
-    if (!beaconIDs.has(key)) {
+    if (!beaconUUIDs.has(key)) {
       delete distanceReadings[key];
     } // if beacons was deleted, delete the distanceReadings for it.
   })
 
-  const matchingBeacon = beaconData.find(beacon => beacon.address === ad.address);
+  const matchingBeacon = beaconData.find(beacon => beacon.uuid === ad.iBeacon.uuid);
   // find matching beacon in config (filters out other BLE signals)
 
   if (matchingBeacon) {
@@ -44,10 +44,10 @@ async function HandleAd(ad, time) {
 };
 
 function HandleUpdate(beacon, distance, time, config) {
-  distanceReadings[beacon.ID].push(distance); // add distance reading to array
-  if (distanceReadings[beacon.ID].length < 15) return; //  if less than 5, keep collecting
+  distanceReadings[beacon.uuid].push(distance); // add distance reading to array
+  if (distanceReadings[beacon.uuid].length < 15) return; //  if less than 5, keep collecting
   
-  if (average(distanceReadings[beacon.ID]) < 30) { // if average is in range(feet)
+  if (average(distanceReadings[beacon.uuid]) < 30) { // if average is in range(feet)
     const scanners = config.scanners;
     const matchingScanner = scanners.find(scanner => scanner.address === getMAC());
     // match mac address of this device to scanners in config

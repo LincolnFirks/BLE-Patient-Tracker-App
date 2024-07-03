@@ -4,13 +4,12 @@ const axios = require('axios');
 async function update(beacon, time, location, config) {
   
   let entry = {
-    beaconID: beacon.ID,
-    patient: beacon.patient,
-    address: beacon.address,
+    tag: beacon.tag,
+    uuid: beacon.uuid,
     location,
     time
   }
-  if (beacon.patient.name !== "-") {
+  if (beacon.tag !== "-") {
     axios.post(`${config.serverURL}/entry`, entry)
       .catch(error => console.error(error));
 

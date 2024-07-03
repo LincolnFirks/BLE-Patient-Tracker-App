@@ -5,6 +5,7 @@ import {
 } from '/imports/api/Collections';
 import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser';
+import axios from 'axios';
 
 
 Meteor.publish('data', () => {
@@ -116,6 +117,9 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => {
       beaconNameCollection.updateAsync({_id: checkPatient._id}, {$set: {time: new Date(entry.time)}})
       console.log("Name updated")
     }
+
+    const config = await findOneAsync({});
+    axios.post(config.EHRendpoint, entry);
 
   }
 }); 
