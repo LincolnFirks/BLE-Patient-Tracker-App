@@ -1,0 +1,37 @@
+digraph BLETrackingSystem {
+    rankdir=LR;
+
+    EHR [label="EHR", shape=box];
+    Tracker [label="Tracking App", shape=box];
+    Pi1 [label="Pi\nScanner", shape=box];
+    Pi2 [label="Pi\nScanner", shape=box];
+    Pi3 [label="Pi\nScanner", shape=box];
+    Token [label="Token", shape=box];
+    RegEndpoint [label="Register Endpoint (API)", shape=box];
+    RegTag [label="Register Tag (API) ", shape=box];
+    AssocUUID [label="Associate Tag w/ UUID (API)", shape=box];
+    
+  
+    
+    EHR -> RegEndpoint
+    EHR -> RegTag
+    RegTag -> AssocUUID [label="Generate UUID"]
+    
+    AssocUUID -> Tracker [label="Reg. Tag/UUID on server"]
+    AssocUUID -> EHR [label="Send UUID to EHR"]
+
+    RegEndpoint -> Tracker [label="Callback URL"]
+    
+    
+    
+    Pi1 -> Tracker 
+    Pi2 -> Tracker[label="Location Update"]
+    Pi3 -> Tracker 
+
+    
+    Token -> Pi1 [label="BLE Signal"]
+    Token -> Pi2
+    Token -> Pi3
+    
+    Tracker -> EHR [label="UUID Moved"]
+}
