@@ -20,6 +20,8 @@ King K, Quarles J, Ravi V, Chowdhury TI, Friday D, Sisson C, Feng Y. The Impact 
 
 ## Design
 
+![Diagram](diagram/graphviz.png)
+
 BLE (Bluetooth Low Energy) beacons send advertisements to recievers. The recievers then send the updates to the controller web application, which updates the database. The Web Application is created with [Meteor](https://www.meteor.com), a full stack JavaScript framework with built a built in MongoDB database and real-time updates.
 
 The recievers can be any computer with BLE and networking capabilities (in my case, raspberry pi 4s). These recievers are placed around a healthcare clinic and update the database remotely. 
