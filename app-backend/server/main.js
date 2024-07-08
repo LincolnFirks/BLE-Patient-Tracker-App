@@ -103,13 +103,13 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
     } //  if location is same as last one, don't make entry.
 
     currentBeaconCollection.updateAsync(
-      { "beacons.ID": entry.beaconID },
+      { "beacons.uuid": entry.uuid },
       { $set: { "beacons.$.location": entry.location, "beacons.$.lastUpdate": new Date(entry.time)  } }
     ); // update current beacons with location
 
   
 
-    const config = await findOneAsync({});
+    const config = await ConfigCollection.findOneAsync({});
     if (config.EHRendpoint && config.EHRendpoint !== "-") {
       try {
         axios.post(config.EHRendpoint, entry); // send location update to EHR. Endpoint is given

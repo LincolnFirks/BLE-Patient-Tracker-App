@@ -5,7 +5,7 @@
   "CurrentScannersCollection": "CurrentScanners",
   "beaconLocationCollection": "BeaconLocations",
   "beaconNameCollection": "BeaconNames",
-  "EHRendpoint": "",
+  "EHRendpoint": "-",
   "beacons": [
     {
       "tag": "Test Tag",

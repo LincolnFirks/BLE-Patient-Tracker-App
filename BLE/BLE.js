@@ -1,4 +1,5 @@
-const BeaconScanner = require('@ansgomez/node-beacon-scanner');
+const BeaconScanner = require('node-beacon-scanner');
+const scanner = new BeaconScanner();
 const { update } = require("./update");
 const { checkDB } = require("./update-config");
 const fs = require("fs");
@@ -6,7 +7,6 @@ const getMAC = require("getmac").default;
 const distanceReadings = {};
 
 
-const scanner = new BeaconScanner();
 
 // Handle beacon advertisements
 scanner.onadvertisement = (ad) => {
@@ -31,14 +31,15 @@ async function HandleAd(ad, time) {
     } // if beacons was deleted, delete the distanceReadings for it.
   })
 
-  const matchingBeacon = beaconData.find(beacon => beacon.uuid === ad.iBeacon.uuid);
-  // find matching beacon in config (filters out other BLE signals)
 
+  const matchingBeacon = beaconData.find(beacon => beacon.uuid === (ad.iBeacon.uuid).toLowerCase());
+  // find matching beacon in config (filters out other BLE signals)
+  
   if (matchingBeacon) {
     let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * 2); // exponent in distance calculation
     let distance = Math.pow(10, exponent) * 3.28; // calculate formula and convert to feet (3.28)
     distance = parseFloat(distance.toFixed(1)); // round - this is est. feet from beacon
-    HandleUpdate(matchingBeacon, distance, time) // send to Handle update
+    HandleUpdate(matchingBeacon, distance, time, config) // send to Handle update
   }
   // HandleUpdate(beaconData[0], distance, time, config)
 };
@@ -58,16 +59,16 @@ function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.ID] = []; //  reset array after it gets to length of 5
 }
 
-async function initiateScan() {
+function initiateScan() {
   const config = JSON.parse(fs.readFileSync('./config.json')); // get current config
   config.beacons.forEach(beacon => { // set up initial distanceReadings
     distanceReadings[beacon.ID] = [];
   })
 
   scanner.startScan().then(() => {
-    console.log('Started scanning...');
+    console.log('Started to scan.')  ;
   }).catch((error) => {
-    console.log(error);
+    console.error(error);
   });
 }
 
