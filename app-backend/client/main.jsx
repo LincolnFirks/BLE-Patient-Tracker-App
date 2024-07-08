@@ -16,6 +16,7 @@ Meteor.startup(() => {
 });
 
 export const formatDateAndTime = (date) => {
+  if (date === "-") return date;
   const formattedDate = date.toLocaleDateString('en-US');
   const formattedTime = date.toLocaleTimeString('en-US');
   return `${formattedDate} ${formattedTime}`;

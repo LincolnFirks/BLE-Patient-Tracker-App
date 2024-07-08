@@ -2,7 +2,6 @@ import React, { useState} from 'react';
 import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import {
-  beaconNameCollection, beaconLocationCollection,
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/Collections';
 import { formatDateAndTime } from '/client/main';
@@ -69,7 +68,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
     ToggleEditScannerPanel();
   }
 
-  const beaconHeader = ["Tag", "UUID", "Location"];
+  const beaconHeader = ["Tag", "UUID", "Location", "Last Update"];
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
@@ -91,6 +90,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.uuid}</td>
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
+                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{formatDateAndTime(beacon.lastUpdate)}</td>
               
               </tr>
             ))}
@@ -331,11 +331,9 @@ function ErrorPanel({TogglePanel, message}) {
       <button className='x-button' onClick={TogglePanel}>X</button>
       <p>Error</p>
       <p>{message}</p>
-      
     </div>
   )
 }
-
 
 
 function MainNav({ currentPage }) {
@@ -346,79 +344,15 @@ function MainNav({ currentPage }) {
           <Link to="/">Home</Link></li>
         <li className={`main-nav-item ${currentPage === "Beacon Overview" ? "active-nav-item" : ""}`}>
           <Link to="/beacon-overview">Beacon Overview</Link></li>
-        <li className={`main-nav-item ${currentPage === "Beacon History" ? "active-nav-item" : ""}`}>
-          <Link to="/beacon-history">Beacon History</Link></li>
       </ul>
     </nav>
   )
 }
 
-
-
-
-function BeaconHistory({ nameHistory }) {
-  const header = ["Patient","ID", "Last Update"]
-  return (
-    <div className='solo-beacon-data'>
-      <MainNav currentPage={"Beacon History"}/>
-      <table className='solo-table'>
-        <thead>
-          <tr>
-            {header.map((item, index) => (<th key={index}>{item}</th>))}
-          </tr>
-        </thead>
-        <tbody>
-          {nameHistory.map((doc, index) => (
-
-            <tr key={doc._id}>
-              <td><Link to={`/history/${doc.patient.name}/${doc.patient.ID}`} className='name-link'>{`${doc.patient.name}`}</Link></td>
-              <td>{doc.patient.ID}</td>
-              <td>{formatDateAndTime(doc.time)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-function NameHistory({ beaconData }) {
-  const { name, ID } = useParams();
-  return (
-    <div>
-      <MainNav />
-      <div className='solo-beacon-data'>
-        <p>{`${name}'s History`}</p>
-
-        <table className='solo-table'>
-          <thead>
-            <tr>
-              <th>Location</th>
-              <th>Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {beaconData.filter(doc => doc.patient.ID === ID)
-              .map(doc => (
-                <tr key={doc._id}>
-                  <td>{doc.location}</td>
-                  <td>{formatDateAndTime(doc.time)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 export const App = () => {
 
-  const beaconNames = useTracker(() => beaconNameCollection.find({}, { sort: { time: -1 } }).fetch());
-  const beaconLocations = useTracker(() => beaconLocationCollection.find({}, { sort: { time: -1 } }).fetch());
   const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
   
-
   let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {
     currentBeacons = currentBeaconsColl[0].beacons
@@ -440,7 +374,6 @@ export const App = () => {
   fetchScanners();
 
 
-
   return (
     <BrowserRouter>
       <div>
@@ -448,8 +381,6 @@ export const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/beacon-overview" element={
             <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
-          <Route path="/beacon-history" element={<BeaconHistory nameHistory={beaconNames} />} />
-          <Route path="/history/:name/:ID" element={<NameHistory beaconData={beaconLocations} />} />
         </Routes>
       </div>
     </BrowserRouter>

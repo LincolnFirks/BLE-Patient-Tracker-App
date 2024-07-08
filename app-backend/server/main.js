@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import {
-  beaconLocationCollection, beaconNameCollection,
-  currentBeaconCollection, ConfigCollection, ScannerCollection
+  currentBeaconCollection, 
+  ConfigCollection, ScannerCollection
 } from '/imports/api/Collections';
 import { WebApp } from 'meteor/webapp'
 import bodyParser from 'body-parser';
@@ -9,13 +9,13 @@ import axios from 'axios';
 
 
 Meteor.publish('data', () => {
-  return [beaconLocationCollection.find(), beaconNameCollection.find(),
-  currentBeaconCollection.find(), ConfigCollection.find(), ScannerCollection.find()];
+  return [ currentBeaconCollection.find(),
+     ConfigCollection.find(), ScannerCollection.find()];
 });
 
 WebApp.connectHandlers.use(bodyParser.json());
 
-WebApp.connectHandlers.use('/register-endpoint', (req, res) => {
+WebApp.connectHandlers.use('/register-endpoint', (req, res) => { // from API
   if (req.method === 'POST') {
     if (!req.body.endpoint) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -37,7 +37,7 @@ WebApp.connectHandlers.use('/register-endpoint', (req, res) => {
   }
 })
 
-WebApp.connectHandlers.use('/register-tag', (req, res) => {
+WebApp.connectHandlers.use('/register-tag', (req, res) => { // from API
   if (req.method === 'POST') {
     const postData = req.body;
     if (!postData.tag || !postData.uuid) {
@@ -45,7 +45,7 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => {
       res.end(JSON.stringify({error: "Incorrect fields entered"}));
     } else {
       try {
-        const newEntry = {tag: postData.tag, uuid: postData.uuid, location: "-"}
+        const newEntry = {tag: postData.tag, uuid: postData.uuid, location: "-", lastUpdate: "-"}
         currentBeaconCollection.updateAsync(
           {}, { $push: {beacons: newEntry} }
         )
@@ -63,7 +63,7 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => {
 })
 
 
-WebApp.connectHandlers.use('/config-update', async (req, res, next) => {
+WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
 
     try {
@@ -84,7 +84,7 @@ WebApp.connectHandlers.use('/config-update', async (req, res, next) => {
   }
 }); // recieve notifcation from device that config was updated.
 
-WebApp.connectHandlers.use('/entry', async (req, res, next) => {
+WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
     const entry = req.body;
 
@@ -102,24 +102,22 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => {
       return;
     } //  if location is same as last one, don't make entry.
 
-    beaconLocationCollection.insertAsync({ ...entry, time: new Date(entry.time)});
-
     currentBeaconCollection.updateAsync(
       { "beacons.ID": entry.beaconID },
-      { $set: { "beacons.$.location": entry.location } }
+      { $set: { "beacons.$.location": entry.location, "beacons.$.lastUpdate": new Date(entry.time)  } }
     ); // update current beacons with location
 
-    const checkPatient = await beaconNameCollection.findOneAsync({"patient.ID": entry.patient.ID});
-    if (!checkPatient) {
-      beaconNameCollection.insertAsync({ patient: entry.patient, time: new Date(entry.time)});
-      console.log("New name entered")
-    } else {
-      beaconNameCollection.updateAsync({_id: checkPatient._id}, {$set: {time: new Date(entry.time)}})
-      console.log("Name updated")
-    }
+  
 
     const config = await findOneAsync({});
-    axios.post(config.EHRendpoint, entry);
+    if (config.EHRendpoint && config.EHRendpoint !== "-") {
+      try {
+        axios.post(config.EHRendpoint, entry); // send location update to EHR. Endpoint is given
+      } catch (error) {
+        console.log("Error posting to EHR", error)
+      }
+    }
+    
 
   }
 }); 
@@ -132,7 +130,7 @@ WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
       ConfigCollection.insertAsync(config);
       await currentBeaconCollection.removeAsync({});
       currentBeaconCollection.insertAsync({
-        beacons: config.beacons.map(beacon => ({...beacon, location: "-" }))
+        beacons: config.beacons.map(beacon => ({...beacon, location: "-", lastUpdate: "-" }))
       });
       await ScannerCollection.removeAsync({});
       ScannerCollection.insertAsync({
@@ -152,67 +150,6 @@ WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
 
 Meteor.methods({
 
-  async 'PostBeaconName'(ID, newName, newID) { // change name in database
-    let result = await currentBeaconCollection.findOneAsync(
-      { $or: [
-        {"beacons.patient.name": newName },
-        { "beacons.patient.ID": newID}
-      ]}
-    );
-    
-    if (result && newName !== "-") {
-      return true;
-    }
-
-    result = await beaconNameCollection.findOneAsync({ "patient.ID": newID })
-    
-    if ((result) && (result.patient.name !== newName) && (newID !== "-")) {
-      return true;
-    }
-
-    const timestamp = new Date();
-
-    const newPatient = {
-      name: newName,
-      ID: newID
-    };
-
-    currentBeaconCollection.updateAsync(
-      { 'beacons.ID': ID },
-      { $set: { 'beacons.$.patient': newPatient } }
-    ); // change name in CurrentBeacons
-
-    ConfigCollection.updateAsync(
-      { 'beacons.ID': ID },
-      { $set: { 'beacons.$.patient': newPatient } }
-    ); // change name in Config
-
-    if (newName !== "-") {
-        // make entry at current location for new name
-      beaconLocationCollection.findOneAsync( 
-        { beaconID: ID }, { sort: { time: -1 } }
-        // get most recent entry with this beacon
-      ).then(doc => {
-        if (doc) {
-          beaconLocationCollection.insertAsync({
-            beaconID: ID,
-            patient: newPatient,
-            address: doc.address,
-            location: doc.location,
-            time: timestamp
-          })
-        } // make location entry with that location
-      });
-
-      beaconNameCollection.updateAsync(
-        {"patient.ID": newID, "patient.name": newName },
-        { $set: { time: timestamp } },
-        { upsert: true }
-      ) // update Name collection if new name or just timestamp
-    }
-
-  
-  },
 
   async 'PostScannerLocation'(address, newLocation) { // change name in database
 
@@ -237,45 +174,6 @@ Meteor.methods({
 
   },
 
-  async 'AddBeacon'(ID, address) {
-    let result = await currentBeaconCollection.findOneAsync(
-      { $or: [
-        { "beacons.address": address },
-        { "beacons.ID": ID }
-      ]}
-    )
-    
-    if (result) {
-      return true;
-    }
-
-  
-    const newBeacon = {
-      ID,
-      patient: {
-        name: "-",
-        ID: "-"
-      },
-      address,
-      location: "-"
-    } // entry for currentBeacons
-    const newBeaconConfig = {
-      ID,
-      patient: {
-        name: "-",
-        ID: "-"
-      },
-      address
-    } // entry for Config
-    currentBeaconCollection.updateAsync(
-      {},
-      { $push: { beacons: newBeacon } }
-    );
-
-    ConfigCollection.updateAsync(
-      {},
-      { $push: { beacons: newBeaconConfig } })
-  },
 
   async 'AddScanner'(location, address) {
 
@@ -312,11 +210,11 @@ Meteor.methods({
   'RemoveBeacon'(removeID) {
     currentBeaconCollection.updateAsync(
       {},
-      { $pull: { beacons: { ID: removeID } } }
+      { $pull: { beacons: { uuid: removeID } } }
     );
     ConfigCollection.updateAsync(
       {},
-      { $pull: { beacons: { ID: removeID } } }
+      { $pull: { beacons: { uuid: removeID } } }
     );
   },
 
