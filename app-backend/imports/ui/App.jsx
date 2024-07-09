@@ -20,14 +20,11 @@ function HomePage({ }) {
 }
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
-  const [createBeaconPanel, setCreateBeaconPanel] = useState(false);
   const [editBeaconPanel, setEditBeaconPanel] = useState(false);
   const [editBeaconName, setBeaconName] = useState("");
   const [editBeaconID, setBeaconID] = useState("");
 
-  const ToggleCreateBeaconPanel = () => {
-    setCreateBeaconPanel(!createBeaconPanel);
-  };
+
   const ToggleEditBeaconPanel = () => {
     setEditBeaconPanel(!editBeaconPanel);
   };
@@ -97,9 +94,6 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
           </tbody>
         </table>
 
-        <button className='assign-button' onClick={ToggleCreateBeaconPanel}>Add a Beacon</button>
-
-        {createBeaconPanel && <CreatePanel onToggleCreatePanel={ToggleCreateBeaconPanel} type={"Beacon"}/>}
         {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
         <table className='assign-table'>
@@ -296,29 +290,25 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
       <button className='x-button' onClick={onToggleEditPanel}>X</button>
       <div className='inner-edit-panel'>
         <p>{`Edit ${type}: ${name}`}</p>
-        <p>Set name:</p>
-        <input
-          type="text"
-          value={nameValue}
-          onChange={handleNameChange}
-        />
-        {(type === "Beacon") && ( 
-          <div>
-            <p>Set ID:</p>
+        {type === "Scanner" && 
+         <div class="edit-scanner">
+            <p>Set name:</p>
             <input
               type="text"
-              value={IDValue}
-              onChange={handleIDChange}
+              value={nameValue}
+              onChange={handleNameChange}
             />
+            <button className='submit-button' onClick={handleSubmit}>Submit</button>
+            <button className='unassign-button' onClick={handleUnassign} >
+              {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}
+            </button>
           </div>
-        )}
+          
+        }
 
       </div>
-      <button className='submit-button' onClick={handleSubmit}>Submit</button>
-      <button className='remove-button' onClick={HandleRemove} >{`Remove ${type}`}</button>
-      <button className='unassign-button' onClick={handleUnassign} >
-        {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}
-      </button>
+      <button className={`remove-button-${type}`} onClick={HandleRemove} >{`Remove ${type}`}</button>
+      
 
       {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
     </div>
