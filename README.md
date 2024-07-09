@@ -26,6 +26,7 @@ BLE (Bluetooth Low Energy) beacons send advertisements to recievers. The recieve
 
 The recievers can be any computer with BLE and networking capabilities (in my case, raspberry pi 4s). These recievers are placed around a healthcare clinic and update the database remotely. 
 
+An API is included in this project that allows an EHR (or any system) to securely register and communicate with the app. An EHR can use the API to register it's endpoint for patient updates. Additionally, it can register tags; the API will generate a UUID for the tag to pass back to the EHR to associate updates with. When a BLE token moves, the Web Application will send a notification to the EHR endpoint that the UUID moved. This will allow secure transfer of information.
 
 # Usage
 
@@ -92,3 +93,79 @@ node beacon-sim.js
 Note that if you change the ports or server that Meteor runs on, you will need to change "serverURL" field in config.json and run initialize-database.js again.
 
 In it's current state, it is set up to interact with a Meteor app and database running locally on the machine (on ports 3000 and 3001) for testing purposes.
+
+## API 
+
+The API consists of two main functions to be called from endpoints by the EHR. (Or any system)
+All requests/responses are in JSON format.
+
+### POST /register-endpoint
+
+#### Request Body:
+
+The request should contain the endpoint you would like to register as well as the url of the server to register that endpoint on.
+
+```json
+{
+  "endpoint": "http://EHR-endpoint/",
+  "appURL": "http://web-app-endpoint/"
+}
+```
+
+#### Response Body:
+
+On a successful call:
+
+```json
+{
+  "message": "Successfully registered endpoint: http://EHR-endpoint/"
+}
+```
+
+On an error: 
+
+```json
+{
+  "error": "An error occured during registration"
+}
+```
+
+#### Method
+
+This method is fairly straightforward. When called, the API will send the given endpoint through to the Web Application in the form of a POST /register-tag request.
+The Web Application will use this to send location updates to.
+
+### POST /register-tag
+
+#### Request Body:
+
+```json
+{
+  "tag": "New Tag",
+  "appURL": "http://web-app-endpoint/"
+}
+```
+
+#### Response Body:
+
+On a successful call:
+
+```json
+{
+  "uuid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+On an error: 
+
+```json
+{
+  "error": "Failed to register on web app"
+}
+```
+
+#### Method
+
+When called, the API will generate a version 4 UUID. This will be passed back in the response for the EHR to associate a patient with. The tag provided by the request and the generated UUID will also be sent to the web application's server via a POST /register-tag request. Here, the Web Application will associate tag with the UUID. 
+
+
