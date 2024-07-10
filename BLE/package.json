@@ -11,9 +11,9 @@
   "description": "",
   "dependencies": {
     "@abandonware/noble": "^1.9.2-25",
-    "@ansgomez/node-beacon-scanner": "^0.2.5",
     "axios": "^1.7.2",
     "getmac": "^6.6.0",
-    "mongodb": "^6.7.0"
+    "mongodb": "^6.7.0",
+    "node-beacon-scanner": "^0.2.2"
   }
 }

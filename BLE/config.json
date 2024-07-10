@@ -42,5 +42,5 @@
       "address": "12:12:12:12:12:12"
     }
   ],
-  "serverURL": "http://localhost:3000/"
+  "serverURL": "http://10.3.196.53:3000/"
 }
