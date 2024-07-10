@@ -3,8 +3,6 @@
   "ConfigCollection": "Config",
   "CurrentBeaconsCollection": "CurrentBeacons",
   "CurrentScannersCollection": "CurrentScanners",
-  "beaconLocationCollection": "BeaconLocations",
-  "beaconNameCollection": "BeaconNames",
   "EHRendpoint": "-",
   "beacons": [
     {
