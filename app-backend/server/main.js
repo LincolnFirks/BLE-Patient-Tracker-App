@@ -242,6 +242,16 @@ Meteor.methods({
     }
     return true;
       
+  },
+
+  'ResetToken'(uuid) {
+    currentBeaconCollection.updateAsync(
+      { "beacons.uuid": uuid},
+      { $set: 
+        {"beacons.$.location": "-",
+        "beacons.$.lastUpdate": "-"
+    }}
+    )
   }
   
 })

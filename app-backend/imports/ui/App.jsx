@@ -244,9 +244,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
     setNameValue(event.target.value);
   };
 
-  const handleIDChange = (event) => {
-    setIDValue(event.target.value);
-  };
+
 
   const handleSubmit = async () => {
     let result;
@@ -272,7 +270,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
   };
 
   const handleUnassign = () => {
-    let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
+    let method = (type === "Beacon") ? 'ResetToken' : 'PostScannerLocation'
     Meteor.call(method, ID, "-", "-");
 
     onToggleEditPanel();
@@ -299,15 +297,16 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
               onChange={handleNameChange}
             />
             <button className='submit-button' onClick={handleSubmit}>Submit</button>
-            <button className='unassign-button' onClick={handleUnassign} >
-              {`Unassign ${(type === "Beacon") ? `Patient` : `Location`}`}
-            </button>
+            
           </div>
           
         }
 
       </div>
       <button className={`remove-button-${type}`} onClick={HandleRemove} >{`Remove ${type}`}</button>
+      <button className='unassign-button' onClick={handleUnassign} >
+              {`Unassign Location`}`
+            </button>
       
 
       {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
