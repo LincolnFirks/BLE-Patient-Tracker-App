@@ -32,6 +32,8 @@ An API is included in this project that allows an EHR (or any system) to securel
 
 [![Demonstration Video](https://img.youtube.com/vi/VxahqHkaXiE/0.jpg)](https://www.youtube.com/watch?v=VxahqHkaXiE)
 
+Video Demonstration of Web Application and API.
+
 ## Web Application
 
 This application sets up the database and reads from it to display information.
