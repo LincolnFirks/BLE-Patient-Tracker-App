@@ -5,10 +5,22 @@
   "CurrentScannersCollection": "CurrentScanners",
   "EHRendpoint": "-",
   "beacons": [
-    
+    {
+      "tag": "Test Tag",
+      "uuid": "48d179cc-1dce-4c8d-aa87-beda7333b0f1",
+      "location": "-",
+      "lastUpdate": "-"
+    }
   ],
   "scanners": [
-    
+    {
+      "location": "My Laptop",
+      "address": "e6:35:d9:9a:b9:34"
+    },
+    {
+      "location": "Raspberry PI 5",
+      "address": "2c:cf:67:0e:5b:1c"
+    }
   ],
   "serverURL": "http://localhost:3000/"
 }

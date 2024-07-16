@@ -1,6 +1,6 @@
 # Real-Time Bluetooth Low Energy Patient Tracking System
 
-This is a project I completed as a part of my time as a Development Intern at Medical Informatics Engineering
+This is a project I completed as a part of my time as a Development Intern at Medical Informatics Engineering.
 
 ## The Problem
 
@@ -29,6 +29,8 @@ The recievers can be any computer with BLE and networking capabilities (in my ca
 An API is included in this project that allows an EHR (or any system) to securely register and communicate with the app. An EHR can use the API to register it's endpoint for patient updates. Additionally, it can register tags; the API will generate a UUID for the tag to pass back to the EHR to associate updates with. When a BLE token moves, the Web Application will send a notification to the EHR endpoint that the UUID moved. This will allow secure transfer of information.
 
 # Usage
+
+[![Demonstration Video](https://img.youtube.com/vi/VxahqHkaXiE/0.jpg)](https://www.youtube.com/watch?v=VxahqHkaXiE)
 
 ## Web Application
 
