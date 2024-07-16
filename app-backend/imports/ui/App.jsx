@@ -1,23 +1,15 @@
 import React, { useState} from 'react';
-import { useParams, BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import {  BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import {
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/Collections';
 import { formatDateAndTime } from '/client/main';
 import ms from 'ms'
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Table from 'react-bootstrap/Table';
 
-function HomePage({ }) {
-  return (
-    <div className='welcome-page'>
-      <MainNav currentPage={"Home"}/>
-      <div>
-        <h1 className='welcome-text'>Welcome to Patient Tracker</h1>
-        <h2 className='welcome-text'>Here you can assign patient IDs, track patients, and view location history</h2>
-      </div>
-    </div>
-  )
-}
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
   const [editBeaconPanel, setEditBeaconPanel] = useState(false);
@@ -69,21 +61,20 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
-    <div className='assign-container'>
-      <MainNav currentPage={"Beacon Overview"}/>
-      <div className='table-container'>
-        <table className='assign-table'>
+    <Container>
+      <div className='table-responsive'>
+        <Table striped bordered hover>
           <thead>
             <tr>
               {beaconHeader.map((heading, index) => (
-                <th key={index}>{heading}</th>
+                <th scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {currentBeacons.map((beacon, index) => (
 
-              <tr key={index}>
+              <tr scope="row" key={index}>
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.uuid}</td>
                 <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
@@ -92,15 +83,15 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
 
         {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
-        <table className='assign-table'>
+        <Table striped bordered hover>
           <thead>
             <tr>
               {scannerHeader.map((heading, index) => (
-                <th key={index}>{heading}</th>
+                <th scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
@@ -108,7 +99,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
             {currentScanners.map((scanner, index) => {
 
               return (
-                <tr key={index}>
+                <tr scope="row" key={index}>
                   <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.location}</td>
                   <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.address}</td>
                   <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.status}</td>
@@ -116,9 +107,9 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
               )
             })}
           </tbody>
-        </table>
+        </Table>
 
-        <button className='assign-button' onClick={ToggleCreateScannerPanel}>Add a Scanner</button>
+        <Button onClick={ToggleCreateScannerPanel}>Add a Scanner</Button>
 
         {createScannerPanel && <CreatePanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
         {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
@@ -126,7 +117,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
         <p className="instructions">To edit or remove a Beacon or Scanner:</p>
         <p className="instructions">Click anywhere on it's table entry </p>
       </div>
-    </div>
+    </Container>
   );
 }
 
@@ -196,7 +187,9 @@ function CreatePanel({ onToggleCreatePanel, type }) {
   };
 
   return (
-    <div className='assign-panel'>
+
+  
+    <div className='assign-panel container'>
       <button className='x-button' onClick={onToggleCreatePanel}>X</button>
       <p>{`Create ${type}:`}</p>
       <p>{`${type} ${type === "Beacon" ? "ID" : "Location"}:`}</p>
@@ -213,7 +206,7 @@ function CreatePanel({ onToggleCreatePanel, type }) {
       />
       <p className='edit-help'>{`Enter MAC address with all letters undercase separated by colons`}</p>
       <p className='edit-help'>{`Example: a1:b2:c3:d4:e5:f6`}</p>
-      <button className='submit-button' onClick={HandleSubmit}>Submit</button>
+      <Button onClick={HandleSubmit}>Submit</Button>
 
       {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
       
@@ -248,7 +241,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
 
   const handleSubmit = async () => {
     let result;
-    let method = (type === "Beacon") ? 'PostBeaconName' : 'PostScannerLocation'
+    let method = (type === "Beacon") ? ' PostBeaconName' : 'PostScannerLocation'
 
     result = await new Promise((resolve, reject) => {
       Meteor.call(method, ID, nameValue, IDValue, (error, response) => {
@@ -296,14 +289,14 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
               value={nameValue}
               onChange={handleNameChange}
             />
-            <button className='submit-button' onClick={handleSubmit}>Submit</button>
+            <Button  onClick={handleSubmit}>Submit</Button>
             
           </div>
           
         }
 
       </div>
-      <button className={`remove-button-${type}`} onClick={HandleRemove} >{`Remove ${type}`}</button>
+      <Button onClick={HandleRemove} >{`Remove ${type}`}</Button>
       <button className='unassign-button' onClick={handleUnassign} >
               {`Unassign Location`}`
             </button>
@@ -324,19 +317,6 @@ function ErrorPanel({TogglePanel, message}) {
   )
 }
 
-
-function MainNav({ currentPage }) {
-  return (
-    <nav className='main-nav-bar'>
-      <ul className='main-nav-list'>
-        <li className={`main-nav-item ${currentPage === "Home" ? "active-nav-item" : ""}`}>
-          <Link to="/">Home</Link></li>
-        <li className={`main-nav-item ${currentPage === "Beacon Overview" ? "active-nav-item" : ""}`}>
-          <Link to="/beacon-overview">Beacon Overview</Link></li>
-      </ul>
-    </nav>
-  )
-}
 
 export const App = () => {
 
@@ -364,11 +344,15 @@ export const App = () => {
 
 
   return (
+
+
     <BrowserRouter>
+
+      
+
       <div>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/beacon-overview" element={
+          <Route path="/" element={
             <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
         </Routes>
       </div>

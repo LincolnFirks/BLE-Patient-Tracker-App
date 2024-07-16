@@ -1,9 +1,10 @@
-body {
+/* body {
   padding: 0px 5px 5px 5px;
   margin: 0px 5px 5px 5px;
   font-family: sans-serif; 
   background-color: rgb(212, 234, 250);
 }
+
 
 .app {
   display:grid;
@@ -293,4 +294,88 @@ body {
 .edit-scanner {
   display: grid;
   place-items: center;
+} */
+
+.assign-panel, .edit-panel, .error-panel {
+  width: 50%;
+  height: 70%;
+  background-color: rgb(213, 213, 213);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.error-panel {
+  background-color: rgb(255, 194, 194);
+  width: 70%;
+  height: 90%;
+}
+
+.error-panel p {
+  font-size: 30px;
+}
+
+.inner-edit-panel {
+  text-align: center;
+}
+
+.submit-button {
+  margin-top: 12px;
+  height: 40px;
+  width: 80px;
+  background-color: rgb(155, 227, 155);
+  border: solid black 1px;
+  display: block;
+  
+}
+
+.submit-button:hover {
+  background-color:  rgb(199, 244, 199);
+}
+
+.x-button, .remove-button-Scanner {
+  position: absolute;
+  left: 5px;
+  
+  height: 20px;
+  background-color: red;
+  border: solid black 1px;
+}
+
+.x-button:hover, .remove-button-Scanner:hover {
+  background-color: rgb(255, 104, 104);
+}
+
+.x-button {
+  top: 5px;
+}
+
+.remove-button-Scanner {
+  bottom: 5px;
+}
+
+.remove-button-Beacon {
+  height: 40px;
+  background-color: red;
+  border: solid black 1px;
+}
+
+.unassign-button {
+  position: absolute;
+  right: 5px;
+  height: 40px;
+  background-color: rgb(139, 234, 245);
+  border: solid black 1px;
+  bottom: 5px;
+}
+
+.unassign-button:hover {
+  background-color: rgb(175, 241, 248);
 }
