@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Meteor } from 'meteor/meteor';
 import { App } from '/imports/ui/App';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './main.css';
 
 Meteor.startup(() => {
   Meteor.subscribe('data');

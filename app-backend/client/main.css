@@ -379,3 +379,23 @@
 .unassign-button:hover {
   background-color: rgb(175, 241, 248);
 }
+
+
+
+#react-target {
+  margin-top: 50px;
+}
+
+body {
+  background-color: var(--bs-body-bg);
+  
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  align-items: center;
+  justify-content: center;
+}
+
+:root {
+  --bs-body-bg: rgb(81, 81, 81) !important;
+}

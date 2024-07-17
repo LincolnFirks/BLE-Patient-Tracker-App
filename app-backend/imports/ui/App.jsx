@@ -4,11 +4,13 @@ import { useTracker } from 'meteor/react-meteor-data';
 import {
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/Collections';
-import { formatDateAndTime } from '/client/main';
+import { formatDateAndTime } from '/client/main.jsx';
 import ms from 'ms'
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
+
+
 
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
@@ -61,11 +63,11 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
-    <Container>
+    <Container >
       <div className='table-responsive'>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
+        <Table striped bordered hover variant="dark">
+          <thead >
+            <tr >
               {beaconHeader.map((heading, index) => (
                 <th scope="col" key={index}>{heading}</th>
               ))}
@@ -87,7 +89,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 
         {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
-        <Table striped bordered hover>
+        <Table striped bordered hover variant="dark">
           <thead>
             <tr>
               {scannerHeader.map((heading, index) => (
@@ -109,14 +111,25 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
           </tbody>
         </Table>
 
-        <Button onClick={ToggleCreateScannerPanel}>Add a Scanner</Button>
-
-        {createScannerPanel && <CreatePanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
-        {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
-
-        <p className="instructions">To edit or remove a Beacon or Scanner:</p>
-        <p className="instructions">Click anywhere on it's table entry </p>
       </div>
+
+      <div className="d-flex justify-content-center my-3" >
+        <Button variant="dark primary" size="lg" onClick={ToggleCreateScannerPanel}>
+          Add a Scanner
+        </Button>
+
+      </div>
+
+      <Container fluid style={{ width: '60%' }} className='text-center bg-dark p-5'>
+        <p className='text-white m-0 '>To edit or remove a Beacon or Scanner:</p>
+        <p className='text-white m-0'>Click anywhere on it's table entry </p>
+      </Container>
+
+
+      {createScannerPanel && <CreatePanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
+      {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
+
+      
     </Container>
   );
 }
