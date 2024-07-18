@@ -9,8 +9,7 @@ import ms from 'ms'
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
-
-
+import Form from 'react-bootstrap/Form';
 
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
@@ -65,6 +64,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
   return (
     <Container >
       <div className='table-responsive'>
+        <p>Beacons</p>
         <Table striped bordered hover variant="dark">
           <thead >
             <tr >
@@ -114,7 +114,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
       </div>
 
       <div className="d-flex justify-content-center my-3" >
-        <Button variant="dark primary" size="lg" onClick={ToggleCreateScannerPanel}>
+        <Button variant="dark primary" className='mb-3' size="lg" onClick={ToggleCreateScannerPanel}>
           Add a Scanner
         </Button>
 
@@ -125,11 +125,9 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
         <p className='text-white m-0'>Click anywhere on it's table entry </p>
       </Container>
 
-
       {createScannerPanel && <CreatePanel onToggleCreatePanel={ToggleCreateScannerPanel} type={"Scanner"}/>}
       {editScannerPanel && <EditPanel name={editScannerName} ID={editScannerAddress} onToggleEditPanel={ToggleEditScannerPanel} type={"Scanner"}/>}
 
-      
     </Container>
   );
 }
@@ -195,39 +193,48 @@ function CreatePanel({ onToggleCreatePanel, type }) {
       ChangeError(`Not a valid MAC address`);
       ToggleErrorPanel();
     }
-
-    
   };
 
   return (
 
-  
-    <div className='assign-panel container'>
-      <button className='x-button' onClick={onToggleCreatePanel}>X</button>
-      <p>{`Create ${type}:`}</p>
-      <p>{`${type} ${type === "Beacon" ? "ID" : "Location"}:`}</p>
-      <input
-        type="text"
-        value={IDvalue}
-        onChange={HandleIDChange}
-      />
-      <p>{`MAC Address:`}</p>
-      <input
-        type="text"
-        value={AddressValue}
-        onChange={HandleAddressChange}
-      />
-      <p className='edit-help'>{`Enter MAC address with all letters undercase separated by colons`}</p>
-      <p className='edit-help'>{`Example: a1:b2:c3:d4:e5:f6`}</p>
-      <Button onClick={HandleSubmit}>Submit</Button>
+    <Container fluid style={{ width: '65%' }} className='create-panel overflow-hidden'>
 
-      {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
+      <Form>
+
+        <Button className='x-button position-absolute' variant="danger" size="sm" onClick={onToggleCreatePanel}>X</Button>
+        <Form.Group className='mb-3'>
+          <Form.Text>{`Create ${type}:`}</Form.Text>
+          <br />
+          <Form.Label className='mt-3'>{`${type} ${type === "Beacon" ? "ID" : "Location"}:`}</Form.Label>
+          <Form.Control 
+            placeholder="Ex: Radiology"
+            type="text"
+            value={IDvalue}
+            onChange={HandleIDChange}
+          />
+        </Form.Group>
+
+        <Form.Group className='mb-3'>
+          
+          <Form.Label>{`MAC Address:`}</Form.Label>
+          <Form.Control 
+            placeholder="Ex: a1:b2:c3:d4:e5:f6"
+            type="text"
+            value={AddressValue}
+            onChange={HandleAddressChange}
+            className='mb-3'
+          />
+          <Form.Text >{`Enter MAC address with all letters lowercase separated by colons`}</Form.Text>
+        </Form.Group>
+        
       
+        <Button variant="dark" size="lg" onClick={HandleSubmit}>Submit</Button>
 
-    </div>
+        {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
+        
+      </Form>
 
-    
-
+    </Container>
   )
 }
 
@@ -290,43 +297,58 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
   }
 
   return (
-    <div className='edit-panel'>
-      <button className='x-button' onClick={onToggleEditPanel}>X</button>
-      <div className='inner-edit-panel'>
-        <p>{`Edit ${type}: ${name}`}</p>
-        {type === "Scanner" && 
-         <div class="edit-scanner">
-            <p>Set name:</p>
-            <input
-              type="text"
-              value={nameValue}
-              onChange={handleNameChange}
-            />
-            <Button  onClick={handleSubmit}>Submit</Button>
-            
-          </div>
-          
-        }
 
-      </div>
-      <Button onClick={HandleRemove} >{`Remove ${type}`}</Button>
-      <button className='unassign-button' onClick={handleUnassign} >
-              {`Unassign Location`}`
-            </button>
+    
+    <Container fluid style={{ width: '65%' }} className='edit-panel overflow-hidden'>
+      <Form>
+
+        <Button className='x-button position-absolute' variant="danger" size="sm" onClick={onToggleEditPanel}>X</Button>
+        
+          <Form.Text>{`Edit ${type}: ${name}`}</Form.Text>
+          <br />
+          {type === "Scanner" && 
+            <Form.Group>
+              <Form.Label className='mt-3'>Set name:</Form.Label>
+              <Form.Control
+                placeholder="Ex: Radiology"
+                type="text"
+                value={nameValue}
+                onChange={handleNameChange}
+              />
+              <Button className='mt-3' variant="dark" size="lg" onClick={handleSubmit}>Submit</Button>
+                
+            </Form.Group>
+          }
+          
+
+        {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
+
+        <Button variant="danger" className={`remove-button-${type} mt-2`} onClick={HandleRemove} >{`Delete ${type}`}</Button>
+
+        <Button variant="dark" className='unassign-button' onClick={handleUnassign} >
+              {`Unassign Location`}
+        </Button>
+
+      </Form>
       
 
       {ErrorPanelState && <ErrorPanel TogglePanel={ToggleErrorPanel} message={ErrorMessage}/>}
-    </div>
+    </Container>
   );
 }
 
 function ErrorPanel({TogglePanel, message}) {
   return (
-    <div className='error-panel'>
-      <button className='x-button' onClick={TogglePanel}>X</button>
-      <p>Error</p>
-      <p>{message}</p>
-    </div>
+    <Container fluid className='error-panel overflow-hidden'>
+      <Form>
+        <Button variant="danger" size="sm" className='x-button' onClick={TogglePanel}>X</Button>
+        <Form.Label>Error</Form.Label>
+        <br/>
+        <Form.Text>{message}</Form.Text>
+        <br/>
+        <Button variant="dark" size="md" className='mt-3' onClick={TogglePanel}>OK</Button>
+      </Form>
+    </Container>
   )
 }
 
@@ -358,11 +380,7 @@ export const App = () => {
 
   return (
 
-
     <BrowserRouter>
-
-      
-
       <div>
         <Routes>
           <Route path="/" element={
