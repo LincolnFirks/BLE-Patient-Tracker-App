@@ -64,7 +64,6 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
   return (
     <Container >
       <div className='table-responsive'>
-        <p>Beacons</p>
         <Table striped bordered hover variant="dark">
           <thead >
             <tr >
