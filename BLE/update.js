@@ -10,7 +10,7 @@ async function update(beacon, time, location, config) {
     time
   }
   if (beacon.tag !== "-") {
-    axios.post(`${config.serverURL}/entry`, entry)
+    axios.post(`${config.appURL}/entry`, entry)
       .catch(error => console.error(error));
 
   }

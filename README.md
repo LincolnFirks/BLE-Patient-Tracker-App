@@ -34,69 +34,35 @@ An API is included in this project that allows an EHR (or any system) to securel
 
 Video Demonstration of Web Application and API.
 
-## Web Application
+## Components
 
-This application sets up the database and reads from it to display information.
+The System is designed with three main components:
 
-If you don't have Meteor installed, run the following command:
+### Web Application
 
-```bash
-npm install -g meteor
-```
+This is a Meteor.js full-stack web application that runs a MongoDB database to handle incoming location changes.
+The app utilizes React and Bootstrap for UI.
 
-This project was designed on the release candidate version of Meteor 3.0.
-If you cant get to the depreciated version of node/npm that meteor 2.x requires, run this command to install the release candidate version: 
+The app and its documentation is located in the "app-backend" directory.
 
-```bash
-curl https://install.meteor.com/?release=3.0-rc.1 | sh
-```
+### Bluetooth Low Energy Scanning
 
- To navigate into the Meteor project and get the correct version and install dependencies, run the following commands: 
+The system utlizies computer boards to scan for BLE beacons and send location updates to the app. These could be any board with BLE and networking capabilities.
 
-```bash
-cd app-backend
-meteor update --release 3.0-rc.1
-npm install
-meteor npm install
-meteor reset
-```
+The scanning is handled by Node.js programs. The code and its documentation can be found in the "BLE" directory.
 
-To start the app, simply run the following command: 
-```bash
-meteor
-```
-You can access the web application on localhost:3000 in the browser by default
+### API
 
-Note:
-Meteor's default ports are 3000 and 3001 for the web application and MongoDB database, respectively. To change this you can run:
-```bash
-meteor --port ####
-```
-Keep in mind that meteor will use the specified port + 1 to run the database on.
+The API is used to register EHR endpoints and tags with the App.
+It assigns UUIDs to tags, so that the app can securely update the location of a patient without knowing their name.
 
-## BLE Scanning Devices
+The API is build with Node.js utilizing Express.js.
 
-To get the device set up, you can run the following commands:
+The API and its documentation can be found in the "UUID-API" directory.
 
-```bash
-cd BLE
-npm install
-```
 
-To start scanning for devices, run:
 
-```bash
-node BLE.js
-```
 
-If you want to set up the program for testing and run a simulation on your device, you can run the following commands:
-```bash
-node initialize-database.js
-node beacon-sim.js
-```
-Note that if you change the ports or server that Meteor runs on, you will need to change "serverURL" field in config.json and run initialize-database.js again.
-
-In it's current state, it is set up to interact with a Meteor app and database running locally on the machine (on ports 3000 and 3001) for testing purposes.
 
 
 
