@@ -20,7 +20,7 @@ Before you start sending updates to the application, you need to edit the config
 }
 ```
 
-The We Application will be set up to work with these Collection names. 
+The Web Application will be set up to work with these Collection names. 
 You will need to change the "appURL" field to where you are running the web app.
 By default, Meteor runs on port 3000. See the Meteor app documentation (app-backend) to see how to change this.
 
@@ -36,7 +36,7 @@ To start scanning for devices, run:
 node BLE.js
 ```
 
-If you want to run a simulation that sends random updates to the app, you can run the following commands:
+If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run the following commands:
 ```bash
 
 node beacon-sim.js
