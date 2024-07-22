@@ -2,7 +2,7 @@
 
 This application sets up the MongoDB database and reads from it to display information.
 
-This project was designed on the release candidate version of Meteor 3.0. It will be migrated to Metero 3.0 when it fully releases.
+This project was designed on the release candidate version of Meteor 3.0. It will be migrated to Meteor 3.0 when it fully releases.
 
 Navigate into the Meteor project (app-backend), and run this command to install the correct release candidate version (on MAC): 
 
