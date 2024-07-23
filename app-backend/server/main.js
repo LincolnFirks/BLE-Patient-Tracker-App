@@ -53,7 +53,7 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => { // from API
           {}, { $push: {beacons: newEntry}}
         )
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({message: "App recieved endpoint successfully"}));
+        res.end(JSON.stringify({message: "App registered tag successfully"}));
       } catch(err) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({error: "Couldn't register tag/uuid in app configuration"}));

@@ -2,6 +2,9 @@ const fs = require("fs");
 const axios = require('axios');
 const getMAC = require("getmac").default;
 const localMAC = getMAC();
+require('dotenv').config();
+
+const appURL = process.env.APP_URL;
 
 async function configure() {
   const config = JSON.parse(fs.readFileSync('./config.json')); // get current local 
@@ -9,7 +12,7 @@ async function configure() {
   let postData = {
     address: localMAC,
   }
-  const response = await axios.post(`${config.serverURL}/config-update`, postData)
+  const response = await axios.post(`${appURL}/config-update`, postData)
     .catch(error => console.error(error));
 
   const DBConfig = response.data;

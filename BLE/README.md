@@ -6,26 +6,18 @@ To get a device set up, navigate to this directory (BLE) and run:
 npm install
 ```
 
-Before you start sending updates to the application, you need to edit the config.json file, which will have these fields:
+Before you start sending updates to the application, you need to set an environmental variable for the url you are running the web application on.
 
-```JSON
-{
-  "ConfigCollection": "Config",
-  "CurrentBeaconsCollection": "CurrentBeacons",
-  "CurrentScannersCollection": "CurrentScanners",
-  "EHRendpoint": "-",
-  "beacons": [],
-  "scanners": [],
-  "appURL": "http://localhost:3000/"
-}
+Create a .env file in the BLE directory and add the following variable.
+
+```plaintext
+APP_URL=http://localhost:3000/
 ```
 
-The Web Application will be set up to work with these Collection names. 
-You will need to change the "appURL" field to where you are running the web app.
+Replace the url with whichever port you are running the web application on.
 By default, Meteor runs on port 3000. See the Meteor app documentation (app-backend) to see how to change this.
 
-
-Once you have set config.json to your specifications, run this while the web app is running to initialize the database.
+Run this once while the web app is running to initialize the database.
 ```bash
 node initialize-database.js
 ```

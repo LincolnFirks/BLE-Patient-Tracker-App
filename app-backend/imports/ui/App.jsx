@@ -315,8 +315,14 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
                 onChange={handleNameChange}
               />
               <Button className='mt-3' variant="dark" size="lg" onClick={handleSubmit}>Submit</Button>
+
+              <Button variant="dark" className='unassign-button' onClick={handleUnassign} >
+              {`Unassign Location`}
+              </Button>
                 
             </Form.Group>
+
+              
           }
           
 
@@ -324,9 +330,7 @@ function EditPanel({ name, ID, onToggleEditPanel, type }) {
 
         <Button variant="danger" className={`remove-button-${type} mt-2`} onClick={HandleRemove} >{`Delete ${type}`}</Button>
 
-        <Button variant="dark" className='unassign-button' onClick={handleUnassign} >
-              {`Unassign Location`}
-        </Button>
+        
 
       </Form>
       
@@ -354,7 +358,7 @@ function ErrorPanel({TogglePanel, message}) {
 
 export const App = () => {
 
-  const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetchAsync());
+  const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
   
   let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {

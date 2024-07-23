@@ -12,8 +12,8 @@
   "dependencies": {
     "@abandonware/noble": "^1.9.2-25",
     "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "getmac": "^6.6.0",
-    "mongodb": "^6.7.0",
     "node-beacon-scanner": "^0.2.2"
   }
 }

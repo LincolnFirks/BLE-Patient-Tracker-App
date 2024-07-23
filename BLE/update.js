@@ -1,5 +1,8 @@
 const config = require("./config.json")
 const axios = require('axios');
+require('dotenv').config();
+
+const appURL = process.env.APP_URL;
 
 async function update(beacon, time, location, config) {
   
@@ -10,13 +13,12 @@ async function update(beacon, time, location, config) {
     time
   }
   if (beacon.tag !== "-") {
-    axios.post(`${config.appURL}/entry`, entry)
+    axios.post(`${appURL}/entry`, entry)
       .catch(error => console.error(error));
 
   }
   
 }
-
 
 module.exports = {
   update,
