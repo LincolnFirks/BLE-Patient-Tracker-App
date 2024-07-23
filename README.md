@@ -11,10 +11,10 @@ From [The Impact of a Location-Sensing Electronic Health Record on Clinician Eff
 “While EHRs have been represented to place patient information . . . at the fingertips of clinicians, physicians continue to struggle to efficiently and safely use these systems.”
 
 From Study:
-Average time required to locate patients with RTLS  = 11.9 ± 2.0 seconds vs. Without = 36.0 ± 5.7 seconds, 
+Average time required to locate patients with RTLS (Real-Time Location Services)  = 11.9 ± 2.0 seconds vs. Without = 36.0 ± 5.7 seconds, 
 Average rooms searched to find patient with RTLS = 1.0 ± 1.06 vs. Without = 3.8 ± 0.5
 
-“This study suggests EHRs equipped with real-time location services (RLTS) that automates patient location and other repetitive tasks may improve physician efficiency, and ultimately, patient safety.”
+“This study suggests EHRs equipped with real-time location services that automates patient location and other repetitive tasks may improve physician efficiency, and ultimately, patient safety.”
 
 King K, Quarles J, Ravi V, Chowdhury TI, Friday D, Sisson C, Feng Y. The Impact of a Location-Sensing Electronic Health Record on Clinician Efficiency and Accuracy: A Pilot Simulation Study. Appl Clin Inform. 2018 Oct;9(4):841-848. doi: 10.1055/s-0038-1675812. Epub 2018 Nov 21. PMID: 30463095; PMCID: PMC6249134.
 
