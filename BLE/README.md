@@ -36,6 +36,7 @@ To start scanning for devices, run:
 node BLE.js
 ```
 
+
 If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run the following commands:
 ```bash
 

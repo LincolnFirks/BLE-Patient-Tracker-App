@@ -354,7 +354,7 @@ function ErrorPanel({TogglePanel, message}) {
 
 export const App = () => {
 
-  const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetch());
+  const currentBeaconsColl = useTracker(() => currentBeaconCollection.find({}).fetchAsync());
   
   let currentBeacons = [];
   if (currentBeaconsColl.length > 0) {

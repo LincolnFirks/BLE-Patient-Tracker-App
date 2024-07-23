@@ -1,17 +1,17 @@
 ## Web Application
 
-This application sets up the MongoDB database and reads from it to display information.
+This project runs the recently released Meteor 3.0
 
-This project was designed on the release candidate version of Meteor 3.0. It will be migrated to Meteor 3.0 when it fully releases.
-
-Navigate into the Meteor project (app-backend), and run this command to install the correct release candidate version (on MAC): 
+Navigate into the Meteor project (app-backend), and run this command to install Meteor on Windows, Linux and OS X.
 
 ```bash
-curl https://install.meteor.com/?release=3.0-rc.1 | sh
+npx meteor
 ```
 
 > [!NOTE]
 > You may need to prefix this command with "sudo" for correct installation on some distributions.
+
+If you have errors installing Meteor 3.0, please refer to the [Meteor Installation Guide](https://v3-docs.meteor.com/about/install.html)
 
 Then, you can install dependencies by running the following commands: 
 
