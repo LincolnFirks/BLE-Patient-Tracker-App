@@ -17,7 +17,7 @@ APP_URL=http://localhost:3000/
 Replace the url with whichever port you are running the web application on.
 By default, Meteor runs on port 3000. See the Meteor app documentation (app-backend) to see how to change this.
 
-Run this once while the web app is running to initialize the database.
+Before any scanning is done, run the following command once while the web app is running to initialize the database.
 ```bash
 node initialize-database.js
 ```
@@ -29,7 +29,7 @@ node BLE.js
 ```
 
 
-If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run the following commands:
+If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run:
 ```bash
 
 node beacon-sim.js
