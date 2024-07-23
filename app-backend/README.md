@@ -31,6 +31,7 @@ You can access the web application at http://localhost:3000 in the browser by de
 > meteor --port ####
 > ```
 > Keep in mind that meteor will use the specified port + 1 to run the database on.
+>
 > e.g.
 > ```bash
 > meteor --port 5000
