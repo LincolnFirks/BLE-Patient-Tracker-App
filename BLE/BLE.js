@@ -5,6 +5,7 @@ const { checkDB } = require("./update-config");
 const fs = require("fs");
 const getMAC = require("getmac").default;
 const distanceReadings = {};
+require('dotenv').config();
 
 
 
@@ -31,12 +32,11 @@ async function HandleAd(ad, time) {
     } // if beacons was deleted, delete the distanceReadings for it.
   })
 
-
   const matchingBeacon = beaconData.find(beacon => beacon.uuid === (ad.iBeacon.uuid).toLowerCase());
   // find matching beacon in config (filters out other BLE signals)
   
   if (matchingBeacon) {
-    let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * 2); // exponent in distance calculation
+    let exponent = (ad.iBeacon.txPower - ad.rssi) / (10 * process.env.ENV_FACTOR); // exponent in distance calculation
     let distance = Math.pow(10, exponent) * 3.28; // calculate formula and convert to feet (3.28)
     distance = parseFloat(distance.toFixed(1)); // round - this is est. feet from beacon
     HandleUpdate(matchingBeacon, distance, time, config) // send to Handle update
@@ -46,15 +46,14 @@ async function HandleAd(ad, time) {
 
 function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.uuid].push(distance); // add distance reading to array
-  if (distanceReadings[beacon.uuid].length < 5) return; //  if less than 5, keep collecting
-  console.log(average(distanceReadings[beacon.uuid]))
+  if (distanceReadings[beacon.uuid].length < process.env.MOVING_AVERAGE) return; //  if less than 5, keep collecting
   
-  if (average(distanceReadings[beacon.uuid]) < 30) { // if average is in range(feet)
+  if (average(distanceReadings[beacon.uuid]) < process.env.PROXIMITY_THRESHOLD) { // if average is in range(feet)
     const scanners = config.scanners;
     const matchingScanner = scanners.find(scanner => scanner.address === getMAC());
     // match mac address of this device to scanners in config
     if (matchingScanner) {
-      update(beacon, time, matchingScanner.location, config); // offload to update
+      update(beacon, time, matchingScanner.location); // offload to update
     }
   } 
   distanceReadings[beacon.ID] = []; //  reset array after it gets to length of 5

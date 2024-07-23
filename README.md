@@ -28,6 +28,11 @@ The recievers can be any computer with BLE and networking capabilities (in my ca
 
 An API is included in this project that allows an EHR (or any system) to securely register and communicate with the app. An EHR can use the API to register it's endpoint for patient updates. Additionally, it can register tags; the API will generate a UUID for the tag to pass back to the EHR to associate updates with. When a BLE token moves, the Web Application will send a notification to the EHR endpoint that the UUID moved. This will allow secure transfer of information.
 
+> [!NOTE]
+> The distance calculations in this system are based a iBeacon RSSI strength. 
+> These readings are usually extremely "jumpy" and not reliable for close estimations. To combat this, rigorous testing and variable tinkering is needed.
+> Scanners should be placed strategically and far from eachother so they can have large detection ranges without overlapping.
+
 # Usage
 
 [![Demonstration Video](https://img.youtube.com/vi/VxahqHkaXiE/maxresdefault.jpg)](https://www.youtube.com/watch?v=VxahqHkaXiE)
