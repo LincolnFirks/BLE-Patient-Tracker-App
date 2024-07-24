@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import {  BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import {  BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { useTracker } from 'meteor/react-meteor-data';
 import {
   currentBeaconCollection, ScannerCollection
@@ -10,6 +10,26 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+
+
+function NavBar({}) {
+  return (
+    <Navbar data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand >Patient Tracker</Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse>
+          <Nav >
+            <Nav.Link as={NavLink} to="/" activeClassName="active-nav">Dashboard</Nav.Link>
+            <Nav.Link as={NavLink} to="/locations" activeClassName="active-nav">Locations</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
+}
 
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
@@ -62,8 +82,10 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
-    <Container >
-      <div className='table-responsive'>
+    <Container>
+      <NavBar/>
+
+      <Container className='table-responsive mt-3'>
         <Table striped bordered hover variant="dark">
           <thead >
             <tr >
@@ -110,7 +132,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
           </tbody>
         </Table>
 
-      </div>
+      </Container>
 
       <div className="d-flex justify-content-center my-3" >
         <Button variant="dark primary" className='mb-3' size="lg" onClick={ToggleCreateScannerPanel}>
@@ -355,6 +377,15 @@ function ErrorPanel({TogglePanel, message}) {
   )
 }
 
+function Locations({}) {
+  return (
+    <Container>
+      <NavBar/>
+
+    </Container>
+  )
+}
+
 
 export const App = () => {
 
@@ -388,6 +419,9 @@ export const App = () => {
         <Routes>
           <Route path="/" element={
             <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
+          <Route path="/locations" element={
+            <Locations/>
+          }/>
         </Routes>
       </div>
     </BrowserRouter>

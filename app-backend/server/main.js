@@ -119,8 +119,6 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
         console.log("Error posting to EHR", error)
       }
     }
-    
-
   }
 }); 
 
@@ -174,7 +172,6 @@ Meteor.methods({
 
 
   async 'AddScanner'(location, address) {
-
     let result = await ScannerCollection.findOneAsync(
       { $or: [
         { "scanners.address": address },

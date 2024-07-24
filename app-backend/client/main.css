@@ -38,9 +38,10 @@
   bottom: 5px;
 }
 
-#react-target {
-  margin-top: 50px;
+.active-nav {
+  color: red !important;
 }
+
 
 body {
   background-color: var(--bs-body-bg);
@@ -54,3 +55,4 @@ body {
 :root {
   --bs-body-bg: rgb(81, 81, 81) !important;
 }
+
