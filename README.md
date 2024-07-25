@@ -50,11 +50,33 @@ The app utilizes React and Bootstrap for UI.
 
 The app and its documentation is located in the "app-backend" directory.
 
+#### Stack:
+
+[Meteor](https://www.meteor.com)
+
+[Node.js](https://nodejs.org/en)
+
+[React](https://react.dev)
+
+[React Bootstrap](https://react-bootstrap.netlify.app)
+
+JavaScript
+
+HTML/CSS
+
+
+
 ### Bluetooth Low Energy Scanning
 
 The system utlizies computer boards to scan for BLE beacons and send location updates to the app. These could be any board with BLE and networking capabilities.
 
 The scanning is handled by Node.js programs. The code and its documentation can be found in the "BLE" directory.
+
+#### Stack:
+
+[Node.js](https://nodejs.org/en)
+
+JavaScript
 
 ### API
 
@@ -64,6 +86,19 @@ It assigns UUIDs to tags, so that the app can securely update the location of a 
 The API is build with Node.js utilizing Express.js.
 
 The API and its documentation can be found in the "UUID-API" directory.
+
+#### Stack:
+
+JavaScript
+
+[Node.js](https://nodejs.org/en)
+
+[https://expressjs.com](https://expressjs.com)
+
+JavaScript
+
+
+
 
 
 
