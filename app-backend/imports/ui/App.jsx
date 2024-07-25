@@ -12,24 +12,10 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 
-function NavBar({}) {
-  return (
-    <Navbar data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand >Patient Tracker</Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse>
-          <Nav >
-            <Nav.Link as={NavLink} to="/" activeClassName="active-nav">Dashboard</Nav.Link>
-            <Nav.Link as={NavLink} to="/locations" activeClassName="active-nav">Locations</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-  );
-}
 
 
 function BeaconOverview({ currentBeacons, currentScanners }) {
@@ -377,13 +363,47 @@ function ErrorPanel({TogglePanel, message}) {
   )
 }
 
-function Locations({}) {
+function Info({}) {
   return (
     <Container>
       <NavBar/>
-
+      <Container fluid className='d-flex flex-column justify-content-center align-items-center'>
+        <Row className='mt-5'>
+          <Col className='text-center overflow-container'>
+            <p className='fs-4'>Check out the following links for more info about this project: </p>
+          </Col>
+          
+        </Row>
+        <Row className='mt-3'>
+          <Button href="https://github.com/LincolnFirks/BLE-Patient-Tracker-App/tree/main" target="_blank" variant="dark">GitHub Repo</Button>
+        </Row>
+        <Row className='mt-3'>
+          <Button href="https://www.youtube.com/watch?v=VxahqHkaXiE" target="_blank" variant="dark">Video Demonstration</Button>
+        </Row>
+        <Row className='mt-3'>
+          <Button variant="dark">Development Journey Video (Not Complete)</Button>
+        </Row>
+      </Container>
     </Container>
   )
+}
+
+
+function NavBar({}) {
+  return (
+    <Navbar data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand >Patient Tracker</Navbar.Brand>
+        <Navbar.Toggle/>
+        <Navbar.Collapse>
+          <Nav activeKey={window.location.pathname}>
+            <Nav.Link as={NavLink} to="/" >Dashboard</Nav.Link>
+            <Nav.Link as={NavLink} to="/info" >Info</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+  );
 }
 
 
@@ -419,8 +439,8 @@ export const App = () => {
         <Routes>
           <Route path="/" element={
             <BeaconOverview currentBeacons={currentBeacons} currentScanners={currentScanners} />} />
-          <Route path="/locations" element={
-            <Locations/>
+          <Route path="/info" element={
+            <Info/>
           }/>
         </Routes>
       </div>

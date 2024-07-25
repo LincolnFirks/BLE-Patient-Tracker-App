@@ -38,10 +38,6 @@
   bottom: 5px;
 }
 
-.active-nav {
-  color: red !important;
-}
-
 
 body {
   background-color: var(--bs-body-bg);
