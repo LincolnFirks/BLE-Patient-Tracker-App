@@ -89,8 +89,6 @@ The API and its documentation can be found in the "UUID-API" directory.
 
 #### Stack:
 
-JavaScript
-
 [Node.js](https://nodejs.org/en)
 
 [Express.js](https://expressjs.com)
