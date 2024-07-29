@@ -4,8 +4,9 @@ const { update } = require("./update");
 const { checkDB } = require("./update-config");
 const fs = require("fs");
 const getMAC = require("getmac").default;
-const distanceReadings = {};
 require('dotenv').config();
+const distanceReadings = {};
+
 
 
 

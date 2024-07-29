@@ -4,6 +4,28 @@
   "CurrentBeaconsCollection": "CurrentBeacons",
   "CurrentScannersCollection": "CurrentScanners",
   "EHRendpoint": "-",
-  "beacons": [],
-  "scanners": []
+  "beacons": [
+    {
+      "tag": "Test Tag",
+      "uuid": "48d179cc-1dce-4c8d-aa87-beda7333b0f1",
+      "location": "-",
+      "lastUpdate": "-"
+    },
+    {
+      "tag": "Test Tag 5",
+      "uuid": "165b9d0d-d6af-4a3c-ba9e-9694a8ad5582",
+      "location": "-",
+      "lastUpdate": "-"
+    }
+  ],
+  "scanners": [
+    {
+      "location": "My Laptop",
+      "address": "e6:35:d9:9a:b9:34"
+    },
+    {
+      "location": "Raspberry PI 5",
+      "address": "2c:cf:67:0e:5b:1c"
+    }
+  ]
 }
