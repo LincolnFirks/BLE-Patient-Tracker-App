@@ -52,11 +52,11 @@ The app and its documentation is located in the "app-backend" directory.
 
 #### Stack:
 
-JavaScript
-[Meteor](https://www.meteor.com)
-[Node.js](https://nodejs.org/en)
-[React](https://react.dev)
-[React Bootstrap](https://react-bootstrap.netlify.app)
+JavaScript  
+[Meteor](https://www.meteor.com)  
+[Node.js](https://nodejs.org/en)  
+[React](https://react.dev)  
+[React Bootstrap](https://react-bootstrap.netlify.app)  
 HTML/CSS
 
 
@@ -69,7 +69,7 @@ The scanning is handled by Node.js programs. The code and its documentation can 
 
 #### Stack:
 
-JavaScript
+JavaScript  
 [Node.js](https://nodejs.org/en)
 
 ### API
@@ -83,8 +83,8 @@ The API and its documentation can be found in the "UUID-API" directory.
 
 #### Stack:
 
-JavaScript
-[Node.js](https://nodejs.org/en)
+JavaScript  
+[Node.js](https://nodejs.org/en)  
 [Express.js](https://expressjs.com)
 
 
