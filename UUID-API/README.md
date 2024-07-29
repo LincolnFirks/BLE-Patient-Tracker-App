@@ -84,8 +84,9 @@ To set up:
 npm install
 ```
 
+It is recommended to run the scanning program on pm2 for remote restarts and program management.  
 To run the API:
 
 ```bash
-node server.js
+pm2 start server.js
 ```

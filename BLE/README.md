@@ -42,14 +42,15 @@ node initialize-database.js
 
 ## Usage
 
+It is recommended to run the scanning program on pm2 for remote restarts and program management.
 To start scanning for devices, run:
 
 ```bash
-node BLE.js
+pm2 start BLE.js
 ```
 
 
 If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run:
 ```bash
-node beacon-sim.js
+pm2 start beacon-sim.js
 ```

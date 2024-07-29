@@ -14,6 +14,7 @@
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "getmac": "^6.6.0",
-    "node-beacon-scanner": "^0.2.2"
+    "node-beacon-scanner": "^0.2.2",
+    "pm2": "^5.4.2"
   }
 }
