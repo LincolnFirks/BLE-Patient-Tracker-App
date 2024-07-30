@@ -11,9 +11,6 @@ If you do not currently have Meteor 3.0 installed, run this command to install M
 npx meteor
 ```
 
-> [!NOTE]
-> You may need to prefix this command with "sudo" for correct installation on some distributions.
-
 If you have errors installing Meteor 3.0, please refer to the [Meteor Installation Guide](https://v3-docs.meteor.com/about/install.html)
 
 Then, you can install dependencies by running the following commands: 
