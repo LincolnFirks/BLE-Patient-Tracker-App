@@ -4,6 +4,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import {
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/Collections';
+import { formatDateAndTime } from '/client/main.jsx'
 import ms from 'ms'
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -75,7 +76,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
           <thead >
             <tr >
               {beaconHeader.map((heading, index) => (
-                <th class="table-header-text" scope="col" key={index}>{heading}</th>
+                <th className="table-header-text" scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
@@ -86,7 +87,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>
-                  {`${ms((new Date() - beacon.lastUpdate) , {long: true})} ago`}</td>
+                  {`${ms((new Date() - beacon.lastUpdate) , {long: true})} ago ${formatDateAndTime(beacon.lastUpdate)}`}</td>
               
               </tr>
             ))}
@@ -99,7 +100,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
           <thead>
             <tr>
               {scannerHeader.map((heading, index) => (
-                <th class="table-header-text" scope="col" key={index}>{heading}</th>
+                <th className="table-header-text" scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
@@ -423,7 +424,7 @@ export const App = () => {
 
     scanners.forEach(scanner => {
       const since = new Date() - scanner.lastUpdate;
-      scanner.status = since > 5000 ? `Offline for ${ms(since, {long: true})}` : "Online";
+      scanner.status = since > 10000 ? `Offline for ${ms(since, {long: true})}` : "Online";
     });
 
     setCurrentScanners(scanners);

@@ -46,8 +46,12 @@ It is recommended to run the scanning program on pm2 for remote restarts and pro
 To start scanning for devices, run:
 
 ```bash
-pm2 start BLE.js
+npx pm2 start BLE.js
 ```
+
+[!NOTE]
+> The 'npx' is not needed if you have pm2 installed globally.
+> Additionally, you may need to prefix the command with 'sudo' due to adapter authorization.
 
 
 If you want to run a simulation that sends random updates to the app with the current beacons and scanners, you can run:

@@ -80,6 +80,7 @@ WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From
       { 'scanners.address': req.body.address },
       { $set: { 'scanners.$.lastUpdate': new Date() } }
     )
+  
     
   }
 }); // recieve notifcation from device that config was updated.
@@ -99,7 +100,6 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
     } // if matching beacon has same location, it hasn't moved
 
     if (duplicate) { 
-      console.log("duplicate entry");
       return;
     } // if beacon on hasn't moved, no need to update
 
