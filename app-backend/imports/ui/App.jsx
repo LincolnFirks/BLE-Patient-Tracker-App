@@ -4,7 +4,6 @@ import { useTracker } from 'meteor/react-meteor-data';
 import {
   currentBeaconCollection, ScannerCollection
 } from '/imports/api/Collections';
-import { formatDateAndTime } from '/client/main.jsx';
 import ms from 'ms'
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -64,7 +63,7 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
     ToggleEditScannerPanel();
   }
 
-  const beaconHeader = ["Tag", "UUID", "Location", "Last Update"];
+  const beaconHeader = ["Tag","Location", "Last Update"];
   const scannerHeader = ["Location", "MAC Address", "Status"]
 
   return (
@@ -72,11 +71,11 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
       <NavBar/>
 
       <Container className='table-responsive mt-3'>
-        <Table striped bordered hover variant="dark">
+        <Table striped bordered hover variant="dark" size="md" style={{ tableLayout: 'fixed', width: '100%' }}>
           <thead >
             <tr >
               {beaconHeader.map((heading, index) => (
-                <th scope="col" key={index}>{heading}</th>
+                <th class="table-header-text" scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
@@ -84,10 +83,10 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
             {currentBeacons.map((beacon, index) => (
 
               <tr scope="row" key={index}>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.uuid}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
-                <td onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{formatDateAndTime(beacon.lastUpdate)}</td>
+                <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
+                <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
+                <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>
+                  {`${ms((new Date() - beacon.lastUpdate) , {long: true})} ago`}</td>
               
               </tr>
             ))}
@@ -96,11 +95,11 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 
         {editBeaconPanel && <EditPanel name={editBeaconName} ID={editBeaconID} onToggleEditPanel={ToggleEditBeaconPanel} type={"Beacon"}/>}
 
-        <Table striped bordered hover variant="dark">
+        <Table striped bordered hover variant="dark" style={{ tableLayout: 'fixed', width: '100%' }}>
           <thead>
             <tr>
               {scannerHeader.map((heading, index) => (
-                <th scope="col" key={index}>{heading}</th>
+                <th class="table-header-text" scope="col" key={index}>{heading}</th>
               ))}
             </tr>
           </thead>
@@ -109,9 +108,9 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
 
               return (
                 <tr scope="row" key={index}>
-                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.location}</td>
-                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.address}</td>
-                  <td onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.status}</td>
+                  <td className=' table-text' onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.location}</td>
+                  <td className=' table-text'   onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.address}</td>
+                  <td className=' table-text' onClick={() => { ShowEditScannerPanel(scanner.location, scanner.address) }}>{scanner.status}</td>
                 </tr>
               )
             })}
