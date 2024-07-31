@@ -13,8 +13,8 @@ async function update(beacon, time, location) {
   }
   if (beacon.tag !== "-") {
     axios.post(`${appURL}/entry`, entry)
-      .catch(error => console.error(error));
-
+      .catch(error => console.error(error))
+      .then(() => {console.log("Update sent.")});
   }
   
 }

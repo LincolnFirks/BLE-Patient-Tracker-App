@@ -45,12 +45,13 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => { // from API
       res.end(JSON.stringify({error: "Incorrect fields entered"}));
     } else {
       try {
-        const newEntry = {tag: postData.tag, uuid: postData.uuid, location: "-", lastUpdate: "-"}
+        const currentEntry = {tag: postData.tag, uuid: postData.uuid, location: "-", lastUpdate: "-"};
+        const configEntry =  {tag: postData.tag, uuid: postData.uuid, location: "-"};
         currentBeaconCollection.updateAsync( // insert into  currentBeacon 
-          {}, { $push: {beacons: newEntry} }
+          {}, { $push: {beacons: currentEntry} }
         )
         ConfigCollection.updateAsync( // update config in db with new tag
-          {}, { $push: {beacons: newEntry}}
+          {}, { $push: {beacons: configEntry}}
         )
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({message: "App registered tag successfully"}));
@@ -108,6 +109,11 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
       { $set: { "beacons.$.location": entry.location, "beacons.$.lastUpdate": new Date(entry.time)  } }
     ); // update current beacons with new location and time
 
+    ConfigCollection.updateAsync(
+      { "beacons.uuid": entry.uuid },
+      { $set: { "beacons.$.location": entry.location } }
+    );
+
   
 
     const config = await ConfigCollection.findOneAsync({}); // fetch config
@@ -130,7 +136,7 @@ WebApp.connectHandlers.use('/initialize', async (req, res, next) => {
       ConfigCollection.insertAsync(config);
       await currentBeaconCollection.removeAsync({});
       currentBeaconCollection.insertAsync({
-        beacons: config.beacons.map(beacon => ({...beacon, location: "-", lastUpdate: "-" }))
+        beacons: config.beacons.map(beacon => ({...beacon, lastUpdate: "-" }))
       });
       await ScannerCollection.removeAsync({});
       ScannerCollection.insertAsync({

@@ -3,6 +3,7 @@ const scanner = new BeaconScanner();
 const { update } = require("./update");
 const { checkDB } = require("./update-config");
 const fs = require("fs");
+const { match } = require('assert');
 const getMAC = require("getmac").default;
 require('dotenv').config();
 const distanceReadings = {};
@@ -50,10 +51,12 @@ function HandleUpdate(beacon, distance, time, config) {
   if (distanceReadings[beacon.uuid].length < process.env.MOVING_AVERAGE) return; //  if less than 5, keep collecting
   
   if (average(distanceReadings[beacon.uuid]) < process.env.PROXIMITY_THRESHOLD) { // if average is in range(feet)
+    console.log(average(distanceReadings[beacon.uuid]));
     const scanners = config.scanners;
     const matchingScanner = scanners.find(scanner => scanner.address === getMAC());
     // match mac address of this device to scanners in config
     if (matchingScanner) {
+      if (beacon.location === scanner.location) return; // if beacon is already there, stop
       update(beacon, time, matchingScanner.location); // offload to update
     }
   } 
@@ -74,7 +77,7 @@ function initiateScan() {
 }
 
 initiateScan();
-checkDB(3000); // check for config updates on interval (milliseconds)
+checkDB(process.env.CONFIG_INTERVAL*1000); // check for config updates on interval (milliseconds)
 
 
 // take average of array of nums (used for the distance calculations.)

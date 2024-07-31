@@ -1,1 +1,28 @@
-{"_id":"666a0868474150c69eb7ca57","ConfigCollection":"Config","CurrentBeaconsCollection":"CurrentBeacons","CurrentScannersCollection":"CurrentScanners","EHRendpoint":"-","beacons":[{"tag":"Test Tag","uuid":"48d179cc-1dce-4c8d-aa87-beda7333b0f1","location":"-","lastUpdate":"-"}],"scanners":[{"location":"Reception Desk","address":"2c:cf:67:0e:5b:1c"},{"location":"Projector","address":"d8:3a:dd:7d:03:47"},{"location":"-","address":"e6:35:d9:9a:b9:34"}]}
+{
+  "_id": "666a0868474150c69eb7ca57",
+  "ConfigCollection": "Config",
+  "CurrentBeaconsCollection": "CurrentBeacons",
+  "CurrentScannersCollection": "CurrentScanners",
+  "EHRendpoint": "-",
+  "beacons": [
+    {
+      "tag": "Test Tag",
+      "uuid": "48d179cc-1dce-4c8d-aa87-beda7333b0f1",
+      "location": "Reception Desk"
+    }
+  ],
+  "scanners": [
+    {
+      "location": "Reception Desk",
+      "address": "2c:cf:67:0e:5b:1c"
+    },
+    {
+      "location": "Projector",
+      "address": "d8:3a:dd:7d:03:47"
+    },
+    {
+      "location": "-",
+      "address": "e6:35:d9:9a:b9:34"
+    }
+  ]
+}
