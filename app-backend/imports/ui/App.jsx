@@ -87,7 +87,8 @@ function BeaconOverview({ currentBeacons, currentScanners }) {
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.tag}</td>
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>{beacon.location}</td>
                 <td className=' table-text' onClick={() => { ShowEditBeaconPanel(beacon.tag, beacon.uuid) }}>
-                  {beacon.lastUpdate === "-" ? "-" : `${ms((new Date() - beacon.lastUpdate) , {long: true})} ago ${formatDateAndTime(beacon.lastUpdate)}`}</td>
+                  {beacon.lastUpdate === "-" ? "-" : ((new Date() - beacon.lastUpdate) < 3000 ? "Just Now" : 
+                  `${ms((new Date() - beacon.lastUpdate) , {long: true})} ago ${formatDateAndTime(beacon.lastUpdate)}`)}</td>
               
               </tr>
             ))}

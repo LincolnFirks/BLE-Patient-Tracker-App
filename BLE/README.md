@@ -13,7 +13,7 @@ Before you start sending updates to the application, you need to set an environm
 Create a .env file in the BLE directory and add the following variables.
 
 ```plaintext
-APP_URL=http://localhost:3000/
+APP_URL=http://localhost:3000
 ENV_FACTOR=2
 MOVING_AVERAGE=5
 PROXIMITY_THRESHOLD=30 

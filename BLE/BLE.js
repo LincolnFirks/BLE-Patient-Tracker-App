@@ -56,11 +56,13 @@ function HandleUpdate(beacon, distance, time, config) {
     const matchingScanner = scanners.find(scanner => scanner.address === getMAC());
     // match mac address of this device to scanners in config
     if (matchingScanner) {
-      if (beacon.location === matchingScanner.location) return; // if beacon is already there, stop
-      update(beacon, time, matchingScanner.location); // offload to update
+      if (beacon.location !== matchingScanner.location) { // if beacon is already there, stop
+        update(beacon, time, matchingScanner.location); // offload to update
+      } 
     }
   } 
   distanceReadings[beacon.uuid] = []; //  reset array after it gets to length of 5
+  console.log(distanceReadings);
 }
 
 function initiateScan() {
