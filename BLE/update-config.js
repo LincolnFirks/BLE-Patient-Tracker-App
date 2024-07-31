@@ -13,7 +13,10 @@ async function configure() {
     address: localMAC,
   }
   const response = await axios.post(`${appURL}/config-update`, postData)
-    .catch(error => console.error(error));
+    .catch(error => {
+      console.error(error);
+      return;
+    });
 
   const DBConfig = response.data;
 

@@ -15,6 +15,14 @@ Meteor.publish('data', () => {
 
 WebApp.connectHandlers.use(bodyParser.json());
 
+WebApp.rawConnectHandlers.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+   // Proceed with the rest of the middleware stack
+  next();
+});
+
 WebApp.connectHandlers.use('/register-endpoint', (req, res) => { // from API
   if (req.method === 'POST') {
     if (!req.body.endpoint) { // no endpoint
@@ -66,7 +74,7 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => { // from API
 
 WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
-
+    console.log("recieved")
     try {
       const config = await ConfigCollection.findOneAsync(); // fetch config from db
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -88,6 +96,7 @@ WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From
 
 WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
+    console.log("recieved")
     const entry = req.body;
 
     const currentBeacons = await currentBeaconCollection.findOneAsync();
