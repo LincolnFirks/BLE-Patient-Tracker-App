@@ -1,6 +1,6 @@
 const axios = require('axios');
 require('dotenv').config();
-const axiosRetry = require('axios-retry');
+const axiosRetry = require('axios-retry').default;
 const appURL = process.env.APP_URL;
 
 axiosRetry(axios, {
@@ -22,7 +22,7 @@ async function update(beacon, time, location) {
     time
   }
   if (beacon.tag !== "-") {
-    axios.post(`${appURL}/entry`, entry)
+    await axios.post(`${appURL}/entry`, entry)
     .then(response => {
       console.log('Success:', response.data);
     })

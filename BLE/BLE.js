@@ -60,7 +60,7 @@ function HandleUpdate(beacon, distance, time, config) {
       update(beacon, time, matchingScanner.location); // offload to update
     }
   } 
-  distanceReadings[beacon.ID] = []; //  reset array after it gets to length of 5
+  distanceReadings[beacon.uuid] = []; //  reset array after it gets to length of 5
 }
 
 function initiateScan() {
