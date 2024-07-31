@@ -49,9 +49,9 @@ async function HandleAd(ad, time) {
 function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.uuid].push(distance); // add distance reading to array
   if (distanceReadings[beacon.uuid].length < process.env.MOVING_AVERAGE) return; //  if less than 5, keep collecting
-  
-  if (average(distanceReadings[beacon.uuid]) < process.env.PROXIMITY_THRESHOLD) { // if average is in range(feet)
     console.log(average(distanceReadings[beacon.uuid]));
+  if (average(distanceReadings[beacon.uuid]) < process.env.PROXIMITY_THRESHOLD) { // if average is in range(feet)
+    
     const scanners = config.scanners;
     const matchingScanner = scanners.find(scanner => scanner.address === getMAC());
     // match mac address of this device to scanners in config

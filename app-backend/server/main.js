@@ -101,9 +101,7 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
 
     const currentBeacons = await currentBeaconCollection.findOneAsync();
     // fetch current Beacons
-
     let duplicate = false;
-
     if (currentBeacons) {
       duplicate = currentBeacons.beacons.find(beacon => beacon.location === entry.location && 
         beacon.uuid === entry.uuid);
@@ -113,17 +111,25 @@ WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanner
       return;
     } // if beacon on hasn't moved, no need to update
 
-    currentBeaconCollection.updateAsync(
-      { "beacons.uuid": entry.uuid },
-      { $set: { "beacons.$.location": entry.location, "beacons.$.lastUpdate": new Date(entry.time)  } }
-    ); // update current beacons with new location and time
+    try { 
+      currentBeaconCollection.updateAsync(
+        { "beacons.uuid": entry.uuid },
+        { $set: { "beacons.$.location": entry.location, "beacons.$.lastUpdate": new Date(entry.time)  } }
+      ); // update current beacons with new location and time
 
-    ConfigCollection.updateAsync(
-      { "beacons.uuid": entry.uuid },
-      { $set: { "beacons.$.location": entry.location } }
-    );
+      ConfigCollection.updateAsync(
+        { "beacons.uuid": entry.uuid },
+        { $set: { "beacons.$.location": entry.location } }
+      );
+    }
+    catch(error) {
+      console.error(error);
+      res.statusCode = 500; // server error
+      res.end(JSON.stringify({ error: 'Internal Server Error' }));
+    }
 
-  
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end("Recieved entry.");
 
     const config = await ConfigCollection.findOneAsync({}); // fetch config
     if (config.EHRendpoint && config.EHRendpoint !== "-") { // if endpoint exists and isn't blank
