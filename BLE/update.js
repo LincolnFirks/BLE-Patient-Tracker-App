@@ -13,6 +13,7 @@ axiosRetry(axios, {
   }
 });
 
+
 async function update(beacon, time, location) {
   
   let entry = {
@@ -24,12 +25,9 @@ async function update(beacon, time, location) {
   if (beacon.tag !== "-") {
     await axios.post(`${appURL}/entry`, entry)
     .then(response => {
-      console.log('Success:', response.data);
     })
     .catch(error => console.error(error));
   }
-  console.log("update sent")
-  
 }
 
 module.exports = {

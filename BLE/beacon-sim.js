@@ -1,5 +1,5 @@
 const { update } = require("./update");
-const { checkDB } = require("./update-config")
+const { CheckConfig } = require("./update-config")
 const fs = require("fs");
 require('dotenv').config();
 
@@ -25,7 +25,7 @@ function BeaconSim(length) {
 }
 
 BeaconSim(SIM_LENGTH*1000);
-checkDB(process.env.CONFIG_INTERVAL*1000)
+CheckConfig(process.env.CONFIG_INTERVAL*1000)
 
 
 function randomIndex(length) {

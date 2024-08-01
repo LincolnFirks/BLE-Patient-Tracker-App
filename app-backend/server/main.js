@@ -74,7 +74,6 @@ WebApp.connectHandlers.use('/register-tag', (req, res) => { // from API
 
 WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
-    console.log("recieved")
     try {
       const config = await ConfigCollection.findOneAsync(); // fetch config from db
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -96,7 +95,6 @@ WebApp.connectHandlers.use('/config-update', async (req, res, next) => { // From
 
 WebApp.connectHandlers.use('/entry', async (req, res, next) => { // From Scanners
   if (req.method === 'POST') {
-    console.log("recieved")
     const entry = req.body;
 
     const currentBeacons = await currentBeaconCollection.findOneAsync();

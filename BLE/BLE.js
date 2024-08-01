@@ -1,15 +1,11 @@
 const BeaconScanner = require('node-beacon-scanner');
 const scanner = new BeaconScanner();
 const { update } = require("./update");
-const { checkDB } = require("./update-config");
+const { CheckConfig } = require("./update-config");
 const fs = require("fs");
-const { match } = require('assert');
 const getMAC = require("getmac").default;
 require('dotenv').config();
 const distanceReadings = {};
-
-
-
 
 // Handle beacon advertisements
 scanner.onadvertisement = (ad) => {
@@ -79,7 +75,7 @@ function initiateScan() {
 }
 
 initiateScan();
-checkDB(process.env.CONFIG_INTERVAL*1000); // check for config updates on interval (milliseconds)
+CheckConfig(process.env.CONFIG_INTERVAL*1000); // check for config updates on interval (milliseconds)
 
 
 // take average of array of nums (used for the distance calculations.)
