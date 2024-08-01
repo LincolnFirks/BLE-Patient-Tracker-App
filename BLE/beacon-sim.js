@@ -6,6 +6,9 @@ require('dotenv').config();
 const SIM_LENGTH = 60 // simulation length in seconds
 const SIM_INTERVAL = 3 // interval of updates in sim (seconds)
 
+let lastScanner;
+let lastBeacon;
+
 function BeaconSim(length) {
 
   let intervalID = setInterval(() => {
@@ -14,8 +17,11 @@ function BeaconSim(length) {
     let scannerData = config.scanners;
     let beaconIndex = randomIndex(beaconData.length);
     let scannerIndex = randomIndex(scannerData.length);
+    if ((beaconIndex === lastBeacon) && (scannerIndex === lastScanner)) return;
     update(beaconData[beaconIndex], new Date(), scannerData[scannerIndex].location, config);
     console.log(`${beaconData[beaconIndex].tag} arrived at ${scannerData[scannerIndex].location}`);
+    lastScanner = scannerIndex;
+    lastBeacon = beaconIndex;
   }, SIM_INTERVAL*1000)
 
   setTimeout(() => {

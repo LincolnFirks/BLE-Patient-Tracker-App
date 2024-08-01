@@ -8,21 +8,22 @@
     {
       "tag": "Test Tag",
       "uuid": "48d179cc-1dce-4c8d-aa87-beda7333b0f1",
-      "location": "Projector"
+      "location": "-"
+    },
+    {
+      "tag": "Test Tag 2",
+      "uuid": "0cc321b4-0ea3-4f7a-b689-46d5fc44e862",
+      "location": "-"
     }
   ],
   "scanners": [
     {
       "location": "Reception Desk",
-      "address": "2c:cf:67:0e:5b:1c"
+      "address": "2c:cg:67:01:5b:1c"
     },
     {
-      "location": "Projector",
-      "address": "d8:3a:dd:7d:03:47"
-    },
-    {
-      "location": "-",
-      "address": "e6:35:d9:9a:b9:34"
+      "location": "X-Ray",
+      "address": "d8:3a:d5:7f:03:47"
     }
   ]
 }
