@@ -35,7 +35,7 @@ An API is included in this project that allows an EHR (or any system) to securel
 
 # Usage
 
-[![Demonstration Video](https://img.youtube.com/vi/VxahqHkaXiE/maxresdefault.jpg)](https://www.youtube.com/watch?v=VxahqHkaXiE)
+[![Demonstration Video](https://img.youtube.com/vi/t1Hx99lSif8/maxresdefault.jpg)](https://www.youtube.com/watch?v=t1Hx99lSif8)
 
 Video Demonstration of Web Application and API.
 
