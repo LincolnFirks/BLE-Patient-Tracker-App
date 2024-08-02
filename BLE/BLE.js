@@ -45,7 +45,6 @@ async function HandleAd(ad, time) {
 function HandleUpdate(beacon, distance, time, config) {
   distanceReadings[beacon.uuid].push(distance); // add distance reading to array
   if (distanceReadings[beacon.uuid].length < process.env.MOVING_AVERAGE) return; //  if less than 5, keep collecting
-    console.log(average(distanceReadings[beacon.uuid]));
   if (average(distanceReadings[beacon.uuid]) < process.env.PROXIMITY_THRESHOLD) { // if average is in range(feet)
     
     const scanners = config.scanners;
@@ -58,7 +57,6 @@ function HandleUpdate(beacon, distance, time, config) {
     }
   } 
   distanceReadings[beacon.uuid] = []; //  reset array after it gets to length of 5
-  console.log(distanceReadings);
 }
 
 function initiateScan() {
