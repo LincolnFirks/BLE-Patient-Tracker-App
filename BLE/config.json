@@ -19,11 +19,11 @@
   "scanners": [
     {
       "location": "Reception Desk",
-      "address": "2c:cg:67:01:5b:1c"
+      "address": "2c:2g:67:b1:5b:8c"
     },
     {
       "location": "X-Ray",
-      "address": "d8:3a:d5:7f:03:47"
+      "address": "e8:3f:d9:7f:03:47"
     }
   ]
 }
